@@ -2,10 +2,8 @@
 
 
 .main {
-  margin-left: variables.$sidebar-width;
-  background-color: #8bf0e7;
+  padding-left: variables.$sidebar-width;
+  background-color: variables.$main-content-background;
   height: 100%;
-  width: 100%;
-  position: fixed;
 }
 
