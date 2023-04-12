@@ -10,7 +10,7 @@ $sidebar-background-hover-active: rgba(255, 255, 255, 0.8);
   height: 100%;
   width: variables.$sidebar-width;
   background-color: variables.$sidebar-footer-background;
-  position: fixed;
+  position: absolute;
   z-index: 1;
   top: 0;
   left: 0;
