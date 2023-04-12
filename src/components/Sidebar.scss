@@ -1,0 +1,38 @@
+@use "../styles/variables";
+
+$sidebar-background: #0e2534;
+$sidebar-text-color: #fff;
+$sidebar-background-hover: rgba(0,0,0,0.1);
+
+.sidebar {
+  color: $sidebar-text-color;
+  width: variables.$sidebar-width;
+  height: 100%;
+  background-color: $sidebar-background;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  padding-top: variables.$header-height;
+
+  .link {
+    display: block;
+    border-top: 1px solid #ffffff7c;
+    padding: 1em;
+    text-decoration: none;
+    color: $sidebar-text-color;
+  
+    &:hover {
+      background-color: $sidebar-background-hover;
+  
+    }
+  }
+
+  .active {
+    background-color: variables.$main-content-background;
+    color: #000;
+  }
+}
+
+
