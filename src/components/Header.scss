@@ -1,0 +1,8 @@
+@use "../styles/variables";
+
+.header {
+  padding-left: variables.$sidebar-width;
+  height: variables.$header-height;
+  background-color: #faa6a6;
+  width: 100%;
+}
