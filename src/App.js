@@ -7,6 +7,7 @@ import Home from './components/Home';
 import Payments from './components/Payments';
 import Maintenance from './components/Maintenance';
 import ContactUs from './components/ContactUs';
+import AccountProfile from "./components/AccountProfile";
 import Settings from './components/Settings';
 import './App.scss';
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="/payments" element={<Payments />} />
             <Route path="/maintenance" element={<Maintenance />} />
             <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/account-profile" element={<AccountProfile />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
