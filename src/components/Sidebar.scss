@@ -1,30 +1,50 @@
 @use "../styles/variables";
 
-$sidebar-background: #0e2534;
+
 $sidebar-text-color: #fff;
 $sidebar-background-hover: rgba(0,0,0,0.1);
+$sidebar-background-hover-active: rgba(255, 255, 255, 0.8);
 
 .sidebar {
-  color: $sidebar-text-color;
-  width: variables.$sidebar-width;
+  font-size: 15px;
   height: 100%;
-  background-color: $sidebar-background;
+  width: variables.$sidebar-width;
+  background-color: variables.$sidebar-footer-background;
   position: fixed;
   z-index: 1;
   top: 0;
   left: 0;
   overflow-x: hidden;
-  padding-top: variables.$header-height;
+
+  .sidebar-title {  
+    display: block;
+    padding: 1em;
+    color: $sidebar-text-color;
+
+    .welcome-message {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 0.5em;  
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .username {
+      font-size: 1em;
+      font-weight: 400;
+      margin-bottom: 0.5em;
+    }
+  }
 
   .link {
     display: block;
-    border-top: 1px solid #ffffff7c;
+    border-top: 1px solid rgba(255,255,255,0.3);
     padding: 1em;
     text-decoration: none;
     color: $sidebar-text-color;
   
     &:hover {
-      background-color: $sidebar-background-hover;
+      background-color: rgba(0,0,0,0.1);
   
     }
   }
@@ -32,6 +52,11 @@ $sidebar-background-hover: rgba(0,0,0,0.1);
   .active {
     background-color: variables.$main-content-background;
     color: #000;
+    border-left: 5px solid transparent;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
   }
 }
 
