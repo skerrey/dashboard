@@ -1,8 +1,14 @@
 @use "../styles/variables";
 
 .header {
-  padding-left: variables.$sidebar-width;
+  position: relative;
+  padding-left: calc(variables.$sidebar-width + 25px);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 25px;
   height: variables.$header-height;
-  background-color: #faa6a6;
-  width: 100%;
+
+  .logo {
+    height: variables.$header-height;
+  }
 }
