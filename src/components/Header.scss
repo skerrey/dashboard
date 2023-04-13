@@ -1,18 +1,17 @@
+// Description: Header styles
+
 @use "../styles/variables";
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-left: calc(variables.$sidebar-width + 25px);
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-right: 25px;
+  margin: 10px 25px 10px calc(variables.$sidebar-width + 25px);
   height: variables.$header-height;
 
   .logo {
     height: variables.$header-height;
-    padding-top: 10px;
+
   }
 
   .pre-address {
@@ -28,5 +27,7 @@
 
   .logout {
     margin-left: 25px;
+    margin-bottom: 6px;
+    color: variables.$bs-blue;
   }
 }
