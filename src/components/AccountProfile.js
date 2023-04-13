@@ -1,3 +1,5 @@
+// Description: Account Profile page
+
 import React from 'react'
 
 function AccountProfile() {

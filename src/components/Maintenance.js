@@ -1,3 +1,5 @@
+// Description: Maintenance page
+
 import React from 'react'
 
 function Maintenance() {

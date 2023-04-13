@@ -1,3 +1,5 @@
+// Description: Payments page
+
 import React from 'react'
 
 function Payments() {
