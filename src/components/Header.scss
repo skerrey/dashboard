@@ -1,7 +1,9 @@
 @use "../styles/variables";
 
 .header {
-  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding-left: calc(variables.$sidebar-width + 25px);
   padding-top: 10px;
   padding-bottom: 10px;
@@ -10,5 +12,21 @@
 
   .logo {
     height: variables.$header-height;
+    padding-top: 10px;
+  }
+
+  .pre-address {
+    font-size: 14px;
+    color: variables.$muted-text;
+    margin-right: 4px;
+  }
+
+  .address {
+    font-size: 15px;
+    color: variables.$secondary-text;
+  }
+
+  .logout {
+    margin-left: 25px;
   }
 }
