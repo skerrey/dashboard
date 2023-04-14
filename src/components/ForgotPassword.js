@@ -30,7 +30,7 @@ export default function ForgotPassword() {
 
   return (
     <>
-      <Card className="forgot-password-card">
+      <Card className="w-25 m-auto mt-5">
         <Card.Body>
           <h2 className="text-center mb-4">Password Reset</h2>
           {error && <Alert variant="danger">{error}</Alert>}
