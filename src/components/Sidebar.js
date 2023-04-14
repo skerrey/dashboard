@@ -13,13 +13,12 @@ function Sidebar() {
       <div className="sidebar-title">
         <div className="welcome-message">Hello</div>
         <div className="username">
-          {currentUser ? currentUser.email : ""}
+          {currentUser ? currentUser.displayName : ""}
         </div>
       </div>
       <NavLink 
         to="/" 
-        className="link"
-        activeClassName="active"
+        className={({isActive}) => (isActive ? "active link" : "none link")} 
         style={isActive => ({
           borderLeftColor: isActive ? "#0d6efd" : "transparent"
         })}
@@ -28,8 +27,7 @@ function Sidebar() {
       </NavLink>
       <NavLink 
         to="/payments" 
-        className="link"
-        activeClassName="active"
+        className={({isActive}) => (isActive ? "active link" : "none link")} 
         style={isActive => ({
           borderLeftColor: isActive ? "#20c997" : "transparent"
         })}
@@ -38,8 +36,7 @@ function Sidebar() {
         </NavLink>
       <NavLink 
         to="/maintenance" 
-        className="link"
-        activeClassName="active"
+        className={({isActive}) => (isActive ? "active link" : "none link")} 
         style={isActive => ({
           borderLeftColor: isActive ? "#fd7e14" : "transparent"
         })}
@@ -48,8 +45,7 @@ function Sidebar() {
       </NavLink>
       <NavLink 
         to="/contact-us" 
-        className="link"
-        activeClassName="active"
+        className={({isActive}) => (isActive ? "active link" : "none link")} 
         style={isActive => ({
           borderLeftColor: isActive ? "#0dcaf0" : "transparent"
         })}
@@ -58,8 +54,7 @@ function Sidebar() {
       </NavLink>
       <NavLink 
         to="/account-profile" 
-        className="link"
-        activeClassName="active"
+        className={({isActive}) => (isActive ? "active link" : "none link")} 
         style={isActive => ({
           borderLeftColor: isActive ? "#0d6efd" : "transparent"
         })}
@@ -68,8 +63,7 @@ function Sidebar() {
       </NavLink>
       <NavLink 
         to="/settings" 
-        className="link"
-        activeClassName="active"
+        className={({isActive}) => (isActive ? "active link" : "none link")} 
         style={isActive => ({
           borderLeftColor: isActive ? "#6f42c1" : "transparent"
         })}
