@@ -6,7 +6,7 @@ import logo from "../images/logo.svg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
-import LogoutFunction from '../helpers/LogoutFunction';
+import LogoutFunction from '../utils/LogoutFunction';
 
 function Header() {
   const { handleLogout } = LogoutFunction();
