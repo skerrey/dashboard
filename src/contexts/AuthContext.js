@@ -16,7 +16,7 @@ export function useAuth() {
 }
 
 export default function AuthProvider({ children }) {
-  
+  const [loggedIn, setLoggedIn] = useState(false); // added state
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
@@ -57,6 +57,14 @@ export default function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
+  useEffect(() => { // added useEffect to update loggedIn state
+    if (currentUser) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  }, [currentUser]);
+
   const value = {
     currentUser,
     login,
@@ -65,7 +73,8 @@ export default function AuthProvider({ children }) {
     resetPassword,
     updateEmail,
     updatePassword,
-    updateInfo
+    updateInfo,
+    loggedIn
   };
 
   return (
