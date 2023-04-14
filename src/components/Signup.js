@@ -52,7 +52,7 @@ export default function Signup() {
 
   return (
     <>
-      <Card className="signup-card">
+      <Card className="w-25 m-auto mt-5">
         <Card.Body>
           <h2 className="text-center mb-4">Sign Up</h2>
           {error && <Alert variant="danger">{error}</Alert>}
