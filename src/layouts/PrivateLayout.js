@@ -9,7 +9,9 @@ function PrivateLayout() {
     <>
       <Sidebar />
       <Header />
-      <div className="main"><Outlet /></div>
+      <div className="private-layout">
+        <Outlet />
+      </div>
     </>
   );
 }
