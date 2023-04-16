@@ -2,7 +2,9 @@
 
 @use "styles/variables";
 
-.main {
+
+// PrivateLayout 
+.private-layout {
   padding-left: variables.$sidebar-width;
   background-color: variables.$main-content-background;
   height: 100%;
