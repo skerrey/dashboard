@@ -1,9 +1,10 @@
 // Description: Forgot password component
 
 import React, { useRef, useState } from 'react';
-import { Form, Button, Card, Alert } from 'react-bootstrap';
+import { Form, Button, Card, Alert, Container, Row, Col } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import logo from '../images/logo.svg';
 
 export default function ForgotPassword() {
   const emailRef = useRef();
@@ -30,28 +31,38 @@ export default function ForgotPassword() {
 
   return (
     <>
-      <Card className="w-25 m-auto mt-5">
-        <Card.Body>
-          <h2 className="text-center mb-4">Password Reset</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          {message && <Alert variant="success">{message}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
-            <Button disabled={loading} className="w-100 mt-3" type="submit">
-              Reset Password
-            </Button>
-          </Form>
-          <div className="w-100 text-center mt-3">
-            <Link to="/login">Login</Link>
-            <div className='mt-2'>
-              Need an account? <Link to="/signup">Sign Up</Link>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
+      <Container className="px-sm-0 px-md-1">
+        <Row className="mt-sm-5 mb-0">
+          <Col sm={9} md={7} lg={6} xl={5} className="px-0 mx-auto pt-sm-5">
+            <Card className="shadow-sm p-3 p-sm-5">
+              <div className="mb-3 d-flex justify-content-center">
+                <img src={logo} alt="logo" height="75" />
+              </div>
+              <div className="mx-4 mx-sm-1">
+                <h3 className="mb-3">
+                  Password Reset
+                </h3>
+
+                {error && <Alert variant="danger">{error}</Alert>}
+                {message && <Alert variant="success">{message}</Alert>}
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group id="email">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control type="email" ref={emailRef} required />
+                  </Form.Group>
+                  <div className="d-flex justify-content-between py-3">
+                    <Button disabled={loading} type="submit">Reset Password</Button>
+                    <NavLink to="/login" className="btn btn-link">Login</NavLink>
+                  </div>
+                </Form>
+                <div className="text-center pt-2">
+                  Need an account? <NavLink to="/signup">Sign Up</NavLink>
+                </div>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </>
   )
 }
