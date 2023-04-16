@@ -3,12 +3,14 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-function PrivateLayout() {
+function GuestLayout() {
   return (
     <>
-      <Outlet />
+      <div className="guest-layout">
+        <Outlet />
+      </div>
     </>
   );
 }
 
-export default PrivateLayout;
+export default GuestLayout;
