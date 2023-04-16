@@ -1,4 +1,4 @@
-// Description: Private Routes for authentication
+// Description: Private Routes for authenticated users
 
 import React from 'react';
 import { Navigate } from 'react-router-dom';
