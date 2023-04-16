@@ -6,6 +6,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AuthProvider, { useAuth } from "./contexts/AuthContext";
 import PrivateRoutes from "./routes/PrivateRoutes";
+import PublicRoutes from "./routes/PublicRoutes";
 
 // Pages
 import Home from './pages/Home';
@@ -39,11 +40,14 @@ function App() {
         <Router>
           <Routes>
 
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            {/* Guest layout when no user authenticated */}
+            <Route element={<GuestLayout />}>
+              <Route path="/login" element={<PublicRoutes><Login /></PublicRoutes>} />
+              <Route path="/signup" element={<PublicRoutes><Signup /></PublicRoutes>} />
+              <Route path="/forgot-password" element={<PublicRoutes><ForgotPassword /></PublicRoutes>} />
+            </Route>
 
-
+            {/* Routes for authenticated users */}
             <Route element={<PrivateLayout />}>
               <Route path="/" element={<PrivateRoutes><Home /></PrivateRoutes>} />
               <Route path="/payments" element={<PrivateRoutes><Payments /></PrivateRoutes>} />
@@ -52,6 +56,7 @@ function App() {
               <Route path="/account-profile" element={<PrivateRoutes><AccountProfile /></PrivateRoutes>} />
               <Route path="/settings" element={<PrivateRoutes><Settings /></PrivateRoutes>} />
             </Route>
+            
           </Routes>
         </Router> 
       </AuthProvider>
