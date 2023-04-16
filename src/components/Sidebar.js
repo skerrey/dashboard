@@ -1,6 +1,6 @@
 // Description: Sidebar component
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Sidebar.scss';
@@ -13,7 +13,9 @@ function Sidebar() {
       <div className="sidebar-title">
         <div className="welcome-message">Hello</div>
         <div className="username">
-          {currentUser ? currentUser.displayName : ""}
+        {currentUser ? currentUser.displayName : ""}
+        <br/>
+        {currentUser ? currentUser.email : ""}
         </div>
       </div>
       <NavLink 
