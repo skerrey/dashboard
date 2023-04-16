@@ -48,10 +48,6 @@ export default function AuthProvider({ children }) {
     return currentUser.updatePassword(password);
   }
 
-  function reloadUser() { // Reload user
-    return currentUser.reload();
-  }
-
   useEffect(() => { // set user on mount
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
@@ -78,8 +74,7 @@ export default function AuthProvider({ children }) {
     updateEmail,
     updatePassword,
     updateInfo,
-    loggedIn,
-    reloadUser
+    loggedIn
   };
 
   return (
