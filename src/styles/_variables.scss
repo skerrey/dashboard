@@ -4,6 +4,16 @@
 $sidebar-width: 200px;
 $header-height: 50px;
 
+// Font sizes
+$font-size-sm: 0.875rem;
+$font-size-md: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-2xl: 1.5rem;
+$font-size-3xl: 2rem;
+$font-size-4xl: 3rem;
+
+
 // Colors
   // Background
   $main-content-background: #f2f7fa;
@@ -14,27 +24,27 @@ $header-height: 50px;
   $secondary-text: #2d2f30;
   $muted-text: #627887;
 
-// Bootstrap variables
-$bs-blue: #0d6efd;
-$bs-indigo: #6610f2;
-$bs-purple: #6f42c1;
-$bs-pink: #d63384;
-$bs-red: #dc3545;
-$bs-orange: #fd7e14;
-$bs-yellow: #ffc107;
-$bs-green: #198754;
-$bs-teal: #20c997;
-$bs-cyan: #0dcaf0;
-$bs-white: #fff;
-$bs-gray: #6c757d;
-$bs-gray-dark: #343a40;
-$bs-primary: $bs-blue;
-$bs-secondary: $bs-gray-dark;
-$bs-success: $bs-green;
-$bs-info: $bs-cyan;
-$bs-warning: $bs-yellow;
-$bs-danger: $bs-red;
-$bs-light: $bs-gray;
-$bs-dark: $bs-gray-dark;
-$bs-body-color: $bs-gray-dark;
-$bs-body-bg: $bs-white;
+  // Bootstrap variables
+  $bs-blue: #0d6efd;
+  $bs-indigo: #6610f2;
+  $bs-purple: #6f42c1;
+  $bs-pink: #d63384;
+  $bs-red: #dc3545;
+  $bs-orange: #fd7e14;
+  $bs-yellow: #ffc107;
+  $bs-green: #198754;
+  $bs-teal: #20c997;
+  $bs-cyan: #0dcaf0;
+  $bs-white: #fff;
+  $bs-gray: #6c757d;
+  $bs-gray-dark: #343a40;
+  $bs-primary: $bs-blue;
+  $bs-secondary: $bs-gray-dark;
+  $bs-success: $bs-green;
+  $bs-info: $bs-cyan;
+  $bs-warning: $bs-yellow;
+  $bs-danger: $bs-red;
+  $bs-light: $bs-gray;
+  $bs-dark: $bs-gray-dark;
+  $bs-body-color: $bs-gray-dark;
+  $bs-body-bg: $bs-white;
