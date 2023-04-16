@@ -1,9 +1,10 @@
 // Description: Login component
 
 import React, { useRef, useState } from 'react';
-import { Form, Button, Card, Alert } from 'react-bootstrap';
+import { Form, Button, Card, Alert, Container, Row, Col } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 import { NavLink, useNavigate } from 'react-router-dom';
+import logo from '../images/logo.svg';
 
 export default function Login() {
   const emailRef = useRef();
@@ -31,31 +32,41 @@ export default function Login() {
 
   return (
     <>
-      <Card className="w-25 m-auto mt-5">
-        <Card.Body>
-          <h2 className="text-center mb-4">Log In</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" autoComplete="email" ref={emailRef} required />
-            </Form.Group>
-            <Form.Group id="password" className="my-2">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" autoComplete="current-password" ref={passwordRef} required />
-            </Form.Group>
-            <Button disabled={loading} className="w-100 mt-3" type="submit">
-              Log In
-            </Button>
-          </Form>
-          <div className="w-100 text-center mt-3">
-            <NavLink to="/forgot-password">Forgot Password?</NavLink>
-            <div className="mt-2">
-              Need an account? <NavLink to="/signup">Sign Up</NavLink>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
+      <Container className="px-sm-0 px-md-1">
+        <Row className="mt-sm-5 mb-0">
+          <Col sm={9} md={7} lg={6} xl={5} className="px-0 mx-auto pt-sm-5">
+            <Card className="shadow-sm p-3 p-sm-5">
+              <div className="mb-3 d-flex justify-content-center">
+                <img src={logo} alt="logo" height="75" />
+              </div>
+              <div className="mx-4 mx-sm-1">
+                <h3 className="mb-3">
+                  Log in to your account
+                </h3>
+
+                {error && <Alert variant="danger">{error}</Alert>}
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group id="email">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control type="email" autoComplete="email" ref={emailRef} required />
+                  </Form.Group>
+                  <Form.Group id="password" className="my-2">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control type="password" autoComplete="current-password" ref={passwordRef} required />
+                  </Form.Group>
+                  <div className="d-flex justify-content-between py-3">
+                    <Button disabled={loading} type="submit">Log In</Button>
+                    <NavLink to="/forgot-password" className="btn btn-link">Forgot Password?</NavLink>
+                  </div>
+                </Form>
+                <div className="text-center pt-2">
+                  Need an account? <NavLink to="/signup">Sign Up</NavLink>
+                </div>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </>
   )
 }
