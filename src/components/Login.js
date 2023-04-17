@@ -24,7 +24,13 @@ export default function Login() {
       await login(emailRef.current.value, passwordRef.current.value);
       navigate('/'); // navigate home after login
     } catch (e) {
-      setError('Failed to sign in');
+      if (e.code === 'auth/user-not-found') {
+        setError('No account with that email');
+      } else if (e.code === 'auth/wrong-password') {
+        setError('Incorrect password');
+      } else {
+        setError('Failed to sign in');
+      }
       console.log(e);
     }
     setLoading(false);
@@ -33,7 +39,7 @@ export default function Login() {
   return (
     <>
       <Container className="px-sm-0 px-md-1">
-        <Row className="mt-sm-5 mb-0">
+        <Row className="pt-sm-5 mb-0">
           <Col sm={9} md={7} lg={6} xl={5} className="px-0 mx-auto pt-sm-5">
             <Card className="shadow-sm p-3 p-sm-5">
               <div className="mb-3 d-flex justify-content-center">
@@ -62,6 +68,7 @@ export default function Login() {
                 <div className="text-center pt-2">
                   Need an account? <NavLink to="/signup">Sign Up</NavLink>
                 </div>
+                
               </div>
             </Card>
           </Col>
