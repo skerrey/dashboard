@@ -24,7 +24,12 @@ export default function ForgotPassword() {
       await resetPassword(emailRef.current.value);
       setMessage('Check your inbox for further instructions');
     } catch (e) {
-      setError('Failed to reset password');
+      if (e.code === 'auth/user-not-found') {
+        setError('No account with that email');
+      } else {
+        setError('Failed to reset password');
+      }
+      console.log(e);
     }
     setLoading(false);
   }
@@ -32,7 +37,7 @@ export default function ForgotPassword() {
   return (
     <>
       <Container className="px-sm-0 px-md-1">
-        <Row className="mt-sm-5 mb-0">
+        <Row className="pt-sm-5 mb-0">
           <Col sm={9} md={7} lg={6} xl={5} className="px-0 mx-auto pt-sm-5">
             <Card className="shadow-sm p-3 p-sm-5">
               <div className="mb-3 d-flex justify-content-center">
@@ -58,6 +63,7 @@ export default function ForgotPassword() {
                 <div className="text-center pt-2">
                   Need an account? <NavLink to="/signup">Sign Up</NavLink>
                 </div>
+
               </div>
             </Card>
           </Col>
