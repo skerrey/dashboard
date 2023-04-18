@@ -1,21 +1,54 @@
 // Description: Sidebar styles
 
 @use "../styles/variables";
+@use "../styles/breakpoints";
 
 $sidebar-text-color: #fff;
 $sidebar-background-hover: rgba(0,0,0,0.1);
 $sidebar-background-hover-active: rgba(255, 255, 255, 0.8);
 
+.sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  z-index: 10;
+
+  &.isMobile {
+    display: block;
+  }
+
+  &.isNotMobile {
+    display: none;
+  }
+}
+
 .sidebar {
   font-size: 15px;
   height: 100%;
   width: variables.$sidebar-width;
-  background-color: variables.$sidebar-footer-background;
-  position: absolute;
+  background-color: variables.$sidebar-background;
+  display: inline-block;
+  position: fixed;
   z-index: 1;
   top: 0;
   left: 0;
   overflow-x: hidden;
+  transition: transform 0.2s ease-out;
+  transform: translateX(0);
+  
+  @media screen and (max-width: breakpoints.$sm) {
+    display: block;
+  }
+
+  &.expanded {
+    transition: transform 0.2s ease-out;
+    transform: translateX(0);
+  }
+
+  &.collapsed {
+    transition: transform 0.2s ease-out;
+    transform: translateX(variables.$sidebar-width * -1);
+  }
 
   .sidebar-title {  
     display: block;
