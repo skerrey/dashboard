@@ -3,10 +3,12 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { 
   faRightFromBracket,
-  faHouse 
+  faHouse,
+  faBars
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
   faRightFromBracket,
-  faHouse
+  faHouse,
+  faBars
 );
