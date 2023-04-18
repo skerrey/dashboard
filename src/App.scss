@@ -1,6 +1,7 @@
 // Description: App styles
 
 @use "styles/variables";
+@use "styles/breakpoints";
 
 
 // PrivateLayout 
@@ -8,5 +9,16 @@
   padding-left: variables.$sidebar-width;
   background-color: variables.$main-content-background;
   height: 100%;
+
+  @media screen and (max-width: breakpoints.$sm) {
+    padding-left: 0;
+  }
+}
+
+// GuestLayout
+.guest-layout {
+  background-color: variables.$login-background;
+  height: 100vh;
+
 }
 
