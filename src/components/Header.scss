@@ -1,6 +1,7 @@
 // Description: Header styles
 
 @use "../styles/variables";
+@use "../styles/breakpoints";
 
 .header {
   display: flex;
@@ -9,15 +10,29 @@
   margin: 10px 25px 10px calc(variables.$sidebar-width + 25px);
   height: variables.$header-height;
 
+  @media screen and (max-width: breakpoints.$sm) {
+    margin-left: 0;
+    padding: 5px;
+  }
+
   .logo {
     height: variables.$header-height;
 
   }
 
-  .pre-address {
+  .address-title {
     font-size: 14px;
     color: variables.$muted-text;
     margin-right: 4px;
+
+    @media screen and (max-width: breakpoints.$sm) {
+      display: block;
+      margin-right: 0;
+    }
+
+    @media screen and (max-width: breakpoints.$xs) {
+      display: none;
+    }
   }
 
   .address {
@@ -25,9 +40,21 @@
     color: variables.$secondary-text;
   }
 
-  .logout {
+  .btn-logout {
     margin-left: 25px;
     margin-bottom: 6px;
     color: variables.$bs-blue;
+
+    @media screen and (max-width: breakpoints.$sm) {
+      padding-right: 40px;
+    }
+
+    @media screen and (max-width: breakpoints.$md) {
+      padding-right: 40px;
+      margin-left: 0;
+
+    }
   }
+
+
 }
