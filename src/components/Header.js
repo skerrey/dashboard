@@ -14,13 +14,13 @@ function Header() {
   return (
     <div className="header">
       <div>
-      <img src={logo} alt="logo" className="logo" />
+        <img src={logo} alt="logo" className="logo" />
       </div>
       <div>
-        <span className="pre-address">Property address</span>
+        <span className="address-title">Property address</span>
         <span className="address">123 Main St, Anytown, USA</span>
-        <button className="btn logout" onClick={handleLogout}>
-        <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" size="sm" /> Log Out
+        <button className="btn btn-logout" onClick={handleLogout}>
+          <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" size="sm" /> Log Out
         </button>
       </div>
     </div>
