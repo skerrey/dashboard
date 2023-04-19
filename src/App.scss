@@ -3,7 +3,6 @@
 @use "styles/variables";
 @use "styles/breakpoints";
 
-
 // PrivateLayout 
 .private-layout {
   padding-left: variables.$sidebar-width;
@@ -19,6 +18,5 @@
 .guest-layout {
   background-color: variables.$login-background;
   height: 100vh;
-
 }
 
