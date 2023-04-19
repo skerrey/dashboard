@@ -1,41 +1,13 @@
 // Description: Sidebar component
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Sidebar.scss';
 
-function Sidebar() {
+function Sidebar({ isSidebarOpen, toggleSidebar, isMobile }) {
   const { currentUser } = useAuth();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  let breakpointXs = 576;
-  let breakpointSm = 768;
-  let breakpointMd = 992;
-  let breakpointLg = 1200;
-  let breakpointXl = 1400;
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < breakpointSm) {
-        setIsMobile(true);
-        setIsSidebarOpen(false);
-      } else {
-        setIsMobile(false);
-        setIsSidebarOpen(true);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   return (
     <>
