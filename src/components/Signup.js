@@ -101,7 +101,7 @@ export default function Signup() {
                   </Form.Group>
                   <Button disabled={loading} className="mt-3" type="submit">Sign Up</Button>
                 </Form>
-                <div className="text-center pt-2">
+                <div className="text-center pt-3">
                   Already have an account? <NavLink to="/login">Login</NavLink>
                 </div>
 
