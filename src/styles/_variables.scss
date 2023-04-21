@@ -5,13 +5,13 @@ $sidebar-width: 200px;
 $header-height: 50px;
 
 // Font sizes
-$font-size-sm: 0.875rem;
-$font-size-md: 1rem;
-$font-size-lg: 1.125rem;
-$font-size-xl: 1.25rem;
-$font-size-2xl: 1.5rem;
-$font-size-3xl: 2rem;
-$font-size-4xl: 3rem;
+$font-size-xs: 0.875rem;
+$font-size-sm: 1rem;
+$font-size-md: 1.25rem;
+$font-size-lg: 2rem;
+$font-size-xl: 2.5rem;
+$font-size-2xl: 3rem;
+$font-size-3xl: 4rem;
 
 
 // Colors
@@ -21,8 +21,8 @@ $font-size-4xl: 3rem;
   $sidebar-background: #0e2534;
 
   // Text
-  $primary-text: #000;
-  $secondary-text: #2d2f30;
+  $primary-text: #2d2f30;
+  $secondary-text: #595959;
   $muted-text: #627887;
 
   // Bootstrap variables
