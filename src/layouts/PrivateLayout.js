@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { Outlet } from 'react-router-dom';
 import { useSidebar } from '../utils/Responsive';
+import { Container } from 'react-bootstrap';
 
 function PrivateLayout() {
   const { isSidebarOpen, toggleSidebar, isMobile } = useSidebar();
@@ -38,7 +39,9 @@ function PrivateLayout() {
       <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} isMobile={isMobile} />
       <Header />
       <div className="private-layout">
-        <Outlet  />
+        <Container>
+          <Outlet />
+        </Container>
       </div>
     </>
   );
