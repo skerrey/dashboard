@@ -9,87 +9,107 @@ import './Sidebar.scss';
 function Sidebar({ isSidebarOpen, toggleSidebar, isMobile }) {
   const { currentUser } = useAuth();
 
+  const handleClose = () => {
+    if (isSidebarOpen && isMobile) {
+      toggleSidebar();
+    }
+  }
+
   return (
     <>
       <button onClick={toggleSidebar} className={`btn sidebar-toggle ${isMobile ? "isMobile" : "isNotMobile"}`}>
         <FontAwesomeIcon icon="fa-solid fa-bars" size="2xl" />
       </button>
-        <div className={`sidebar ${isSidebarOpen ? "expanded" : "collapsed"} ${isMobile ? "isMobile" : "isNotMobile"}`}>
-          <div className="sidebar-title">
-            <div className="welcome-message">Hello</div>
-            <div className="username">
-              {currentUser ? currentUser.displayName : ''}
-              <br />
-              {currentUser ? currentUser.email : ''}
-            </div>
+
+      <div className={`sidebar ${isSidebarOpen ? "expanded" : "collapsed"} ${isMobile ? "isMobile" : "isNotMobile"}`}>
+        <div className="sidebar-title">
+          <div className="welcome-message">Hello</div>
+          <div className="username">
+            {currentUser ? currentUser.displayName : ''}
+            <br />
+            {currentUser ? currentUser.email : ''}
           </div>
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              isActive ? 'active link' : 'none link'
-            }
-            style={(isActive) => ({
-              borderLeftColor: isActive ? '#0d6efd' : 'transparent',
-            })}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/payments"
-            className={({ isActive }) =>
-              isActive ? 'active link' : 'none link'
-            }
-            style={(isActive) => ({
-              borderLeftColor: isActive ? '#20c997' : 'transparent',
-            })}
-          >
-            Payments
-          </NavLink>
-          <NavLink
-            to="/maintenance"
-            className={({ isActive }) =>
-              isActive ? 'active link' : 'none link'
-            }
-            style={(isActive) => ({
-              borderLeftColor: isActive ? '#fd7e14' : 'transparent',
-            })}
-          >
-            Maintenance
-          </NavLink>
-          <NavLink
-            to="/contact-us"
-            className={({ isActive }) =>
-              isActive ? 'active link' : 'none link'
-            }
-            style={(isActive) => ({
-              borderLeftColor: isActive ? '#0dcaf0' : 'transparent',
-            })}
-          >
-            Contact Us
-          </NavLink>
-          <NavLink
-            to="/account-profile"
-            className={({ isActive }) =>
-              isActive ? 'active link' : 'none link'
-            }
-            style={(isActive) => ({
-              borderLeftColor: isActive ? '#0d6efd' : 'transparent',
-            })}
-          >
-            Account Profile
-          </NavLink>
-          <NavLink
-            to="/settings"
-            className={({ isActive }) =>
-              isActive ? 'active link' : 'none link'
-            }
-            style={(isActive) => ({
-              borderLeftColor: isActive ? '#6f42c1' : 'transparent',
-            })}
-          >
-            Settings
-          </NavLink>
         </div>
+
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            isActive ? 'active link' : 'none link'
+          }
+          style={(isActive) => ({
+            borderLeftColor: isActive ? '#0d6efd' : 'transparent',
+          })}
+          onClick={handleClose}
+        >
+          Home
+        </NavLink>
+
+        <NavLink
+          to="/payments"
+          className={({ isActive }) =>
+            isActive ? 'active link' : 'none link'
+          }
+          style={(isActive) => ({
+            borderLeftColor: isActive ? '#20c997' : 'transparent',
+          })}
+          onClick={handleClose}
+        >
+          Payments
+        </NavLink>
+
+        <NavLink
+          to="/maintenance"
+          className={({ isActive }) =>
+            isActive ? 'active link' : 'none link'
+          }
+          style={(isActive) => ({
+            borderLeftColor: isActive ? '#fd7e14' : 'transparent',
+          })}
+          onClick={handleClose}
+        >
+          Maintenance
+        </NavLink>
+
+        <NavLink
+          to="/contact-us"
+          className={({ isActive }) =>
+            isActive ? 'active link' : 'none link'
+          }
+          style={(isActive) => ({
+            borderLeftColor: isActive ? '#0dcaf0' : 'transparent',
+          })}
+          onClick={handleClose}
+        >
+          Contact Us
+        </NavLink>
+
+        <NavLink
+          to="/account-profile"
+          className={({ isActive }) =>
+            isActive ? 'active link' : 'none link'
+          }
+          style={(isActive) => ({
+            borderLeftColor: isActive ? '#0d6efd' : 'transparent',
+          })}
+          onClick={handleClose}
+        >
+          Account Profile
+        </NavLink>
+
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            isActive ? 'active link' : 'none link'
+          }
+          style={(isActive) => ({
+            borderLeftColor: isActive ? '#6f42c1' : 'transparent',
+          })}
+          onClick={handleClose}
+        >
+          Settings
+        </NavLink>
+        
+      </div>
     </>
   );
 }
