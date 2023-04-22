@@ -21,7 +21,7 @@
   }
 
   .address-title {
-    font-size: 14px;
+    font-size: variables.$font-size-xs;
     color: variables.$muted-text;
     margin-right: 4px;
 
@@ -36,7 +36,7 @@
   }
 
   .address {
-    font-size: 15px;
+    font-size: variables.$font-size-sm;
     color: variables.$secondary-text;
   }
 
