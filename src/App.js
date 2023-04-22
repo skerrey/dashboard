@@ -26,7 +26,6 @@ import PrivateLayout from "./layouts/PrivateLayout";
 import GuestLayout from "./layouts/GuestLayout";
 
 // Styling
-import "bootstrap/dist/css/bootstrap.min.css";
 import './App.scss';
 import "./utils/FontAwesomeIcons";
 
