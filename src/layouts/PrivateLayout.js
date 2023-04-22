@@ -39,7 +39,7 @@ function PrivateLayout() {
       <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} isMobile={isMobile} />
       <Header />
       <div className="private-layout">
-        <Container>
+        <Container fluid>
           <Outlet />
         </Container>
       </div>
