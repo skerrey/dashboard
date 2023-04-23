@@ -13,10 +13,9 @@ const AuthContext = React.createContext();
 
 export function useAuth() {
   return useContext(AuthContext);
-}
+};
 
 export default function AuthProvider({ children }) {
-  const [loggedIn, setLoggedIn] = useState(false); // added state
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
@@ -26,27 +25,27 @@ export default function AuthProvider({ children }) {
 
   function updateInfo(name) { // Update user info
     return updateProfile(auth.currentUser, {displayName: name});
-  }
-
+  };
+  
   function login(email, password) { // Login
     return signInWithEmailAndPassword(auth, email, password); // Change this function to log into server (firebase alternative)
   };
 
   function logout() { // Logout
     return auth.signOut();
-  }
+  };
 
   function resetPassword(email) { // Reset password
     return sendPasswordResetEmail(auth, email);
-  }
+  };
 
   function updateEmail(email) { // Update email
     return currentUser.updateEmail(email);
-  }
+  };
 
   function updatePassword(password) { // Update password
     return currentUser.updatePassword(password);
-  }
+  };
 
   useEffect(() => { // set user on mount
     const unsubscribe = auth.onAuthStateChanged(user => {
@@ -57,14 +56,6 @@ export default function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  useEffect(() => { // added useEffect to update loggedIn state
-    if (currentUser) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  }, [currentUser]);
-
   const value = {
     currentUser,
     login,
@@ -73,8 +64,7 @@ export default function AuthProvider({ children }) {
     resetPassword,
     updateEmail,
     updatePassword,
-    updateInfo,
-    loggedIn
+    updateInfo
   };
 
   return (
