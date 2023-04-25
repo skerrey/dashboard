@@ -1,13 +1,15 @@
 // Description: Authentication Context for Firebase
 
 import React, { useContext, useState, useEffect } from 'react';
-import { auth } from '../firebase.config';
+import { auth, db } from '../firebase.config';
 import { 
   createUserWithEmailAndPassword, 
   updateProfile, 
   signInWithEmailAndPassword,
   sendPasswordResetEmail
 } from 'firebase/auth';
+
+import { doc, setDoc } from "firebase/firestore";
 
 const AuthContext = React.createContext();
 
@@ -19,12 +21,51 @@ export default function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
-  function signup(email, password) { // Signup
-    return createUserWithEmailAndPassword(auth, email, password);
+  function signup(firstName, lastName, email, password) { // Signup
+    return createUserWithEmailAndPassword(auth, email, password)
+
+    // Add user to database
+    .then(async (result) => {
+      try {
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleString('en-US', { 
+          month: '2-digit', 
+          day: '2-digit', 
+          year: 'numeric',
+          // hour: 'numeric',
+          // minute: 'numeric',
+          // second: 'numeric',
+          hour12: true
+        });
+
+        const ref = doc(db, "users", result.user.uid)
+        await setDoc(ref, { 
+          name: {
+            firstName: firstName,
+            lastName: lastName,
+          },
+          email, 
+          userId: `${result.user.uid}`,
+          createdAt: formattedDate 
+        })
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    })
   };
 
   function updateInfo(name) { // Update user info
-    return updateProfile(auth.currentUser, {displayName: name});
+    return updateProfile(auth.currentUser, {displayName: name})
+
+    // Update user info in database
+    // .then(async () => {
+    //   try {
+    //     const ref = doc(db, "users", auth.currentUser.uid)
+    //     await setDoc(ref, { name }, { merge: true })
+    //   } catch (e) {
+    //     console.error("Error updating document: ", e);
+    //   }
+    // })
   };
   
   function login(email, password) { // Login
@@ -40,7 +81,17 @@ export default function AuthProvider({ children }) {
   };
 
   function updateEmail(email) { // Update email
-    return currentUser.updateEmail(email);
+    return currentUser.updateEmail(email)
+
+    // Update email in database
+    .then(async () => {
+      try {
+        const ref = doc(db, "users", auth.currentUser.uid)
+        await setDoc(ref, { email }, { merge: true })
+      } catch (e) {
+        console.error("Error updating document: ", e);
+      }
+    })
   };
 
   function updatePassword(password) { // Update password
