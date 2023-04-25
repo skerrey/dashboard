@@ -2,14 +2,13 @@
 
 import React from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
-import './Home.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function Main() {
-
   return (
     <div>
       <div className="page-title">
-        Home
+        Home <FontAwesomeIcon icon="fa-solid fa-house" size="xs" />
       </div>
       <Row md={1} lg={2}>
         <Col>
