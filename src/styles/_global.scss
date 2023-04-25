@@ -1,1 +1,40 @@
 // Description: Global styles
+
+@use '../styles/variables';
+
+.page-title {
+  font-size: variables.$font-size-xl;
+  color: variables.$primary-text;
+}
+
+.col {
+  padding: 10px;
+}
+
+// Card styles
+.card {
+  &.card-payments {
+    border-top: 5px solid variables.$bs-teal;
+  }
+
+  &.card-maintenance {
+    border-top: 5px solid variables.$bs-orange;
+  }
+
+  &.card-contact {
+    border-top: 5px solid variables.$bs-cyan;
+  }
+
+  &.card-account {
+    border-top: 5px solid variables.$bs-blue;
+  }
+
+  &.card-settings {
+    border-top: 5px solid variables.$bs-purple;
+  }
+
+  .card-title {
+    font-size: variables.$font-size-lg;
+    color: variables.$primary-text;
+  }
+}
