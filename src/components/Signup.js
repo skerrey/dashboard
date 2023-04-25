@@ -7,16 +7,17 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import logo from '../images/logo.svg';
 
 export default function Signup() {
-  const firstNameRef = useRef();
-  const lastNameRef = useRef();
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const passwordConfirmRef = useRef();
   const { signup, updateInfo } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const firstNameRef = useRef();
+  const lastNameRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const passwordConfirmRef = useRef();
+  
   async function handleSubmit(e) { // signup user on submit
     e.preventDefault();
 
@@ -38,13 +39,9 @@ export default function Signup() {
     try { // try to signup user
       setError('');
       setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
+      await signup(firstNameRef.current.value, lastNameRef.current.value, emailRef.current.value, passwordRef.current.value);
       await updateInfo(capitalize(name));
-      // await auth.currentUser.reload();
       navigate('/');
-      // let user = auth.currentUser;
-      // await user.reload();
-      // user = auth.currentUser; // Reload the user object
     } catch (e) {
       if (e.code === 'auth/email-already-in-use') {
         setError('An account with that email already exists');
