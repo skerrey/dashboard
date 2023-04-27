@@ -27,26 +27,15 @@ export default function AuthProvider({ children }) {
     // Add user to database
     .then(async (result) => {
       try {
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleString('en-US', { 
-          month: '2-digit', 
-          day: '2-digit', 
-          year: 'numeric',
-          // hour: 'numeric',
-          // minute: 'numeric',
-          // second: 'numeric',
-          hour12: true
-        });
-
         const ref = doc(db, "users", result.user.uid)
         await setDoc(ref, { 
+          _id: `${result.user.uid}`,
           name: {
             firstName: firstName,
             lastName: lastName,
           },
           email, 
-          userId: `${result.user.uid}`,
-          createdAt: formattedDate 
+          createdAt: new Date().toLocaleString()
         })
       } catch (e) {
         console.error("Error adding document: ", e);
