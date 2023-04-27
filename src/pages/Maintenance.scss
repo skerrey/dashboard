@@ -10,7 +10,11 @@
 
   }
     
-  .created-at {
+  .created-at, maintenance-id {
     font-size: 14px;
+  }
+
+  .maintenance-id {
+    font-size: 12px;
   }
 }
