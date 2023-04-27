@@ -19,6 +19,7 @@ export function useAuth() {
 
 export default function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
+  const [userId, setUserId] = useState();
   const [loading, setLoading] = useState(true);
 
   function signup(firstName, lastName, email, password) { // Signup
@@ -90,6 +91,7 @@ export default function AuthProvider({ children }) {
   useEffect(() => { // set user on mount
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
+      setUserId(user?.uid)
       setLoading(false);
     });
 
@@ -98,6 +100,7 @@ export default function AuthProvider({ children }) {
 
   const value = {
     currentUser,
+    userId,
     login,
     signup,
     logout,
