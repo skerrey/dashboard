@@ -10,7 +10,7 @@ function Main() {
       <div className="page-title">
         Home <FontAwesomeIcon icon="fa-solid fa-house" size="xs" />
       </div>
-      <Row md={1} lg={2}>
+      <Row xs={1} sm={1} md={1} lg={2}>
         <Col>
           <Card className="card-payments">
             <Card.Body>
@@ -34,7 +34,7 @@ function Main() {
           </Card>
         </Col>
       </Row>
-      <Row md={1} lg={2}>
+      <Row xs={1} sm={1} md={1} lg={2}>
         <Col>
           <Card className="card-account">
             <Card.Body>
