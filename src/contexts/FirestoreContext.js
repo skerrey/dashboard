@@ -1,12 +1,9 @@
 // Description: Authentication Context for Firebase
 
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { db} from '../firebase.config';
-
 import { doc, updateDoc, arrayUnion, getDoc  } from 'firebase/firestore';
 import FormattedDate from '../utils/FormattedDate';
-import { useAuth } from './AuthContext';
-
 
 const FirestoreContext = React.createContext();
 
@@ -15,13 +12,11 @@ export function useFirestore() {
 };
 
 export default function FirestoreProvider({ children }) {
-  const { currentUser } = useAuth();
   const { formattedDateDay, formattedDateHour } = FormattedDate();
-  const userId = currentUser.uid; 
-  const userRef = doc(db, "users", userId);
 
-  // Update Firestore database with maintenance request
-  const updateFirestore = async (maintenanceId, file, issue, otherMessage, message) => {
+  // Add Maintenance request to Firestore database
+  const addMaintenanceRequest = async (userId, maintenanceId, file, issue, otherMessage, message) => {
+    const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
       maintenanceRequests: arrayUnion(
         {
@@ -36,14 +31,19 @@ export default function FirestoreProvider({ children }) {
             otherMessage
           },
           message: message,
-          open: true
+          status: {
+            open: true,
+            received: false,
+            inProgress: false,
+            completed: false,
+          }
         }
       )
     }, { merge: true });
   };
 
-  // Fetch maintenance requests from Firestore database and sets them to state
-  const fetchMaintenanceRequests = async (setMaintenanceRequests) => {
+  // Get maintenance requests from Firestore database and sets them to state
+  const getMaintenanceRequests = async (userId, setMaintenanceRequests) => {
     const userRef = doc(db, "users", userId);
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
@@ -51,9 +51,28 @@ export default function FirestoreProvider({ children }) {
     }
   };
 
+  // Add Contact Us message to Firestore database
+  const addContactUsMessage = async (userId, messageId, subject, message) => {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      messages: arrayUnion(
+        {
+          _id: messageId,
+          message: message,
+          date: {
+            day: formattedDateDay,
+            time: formattedDateHour
+          },
+          subject: subject
+        }
+      )
+    }, { merge: true });
+  }
+
   const value = {
-    updateFirestore,
-    fetchMaintenanceRequests
+    addMaintenanceRequest,
+    getMaintenanceRequests,
+    addContactUsMessage
   };
 
   return (
