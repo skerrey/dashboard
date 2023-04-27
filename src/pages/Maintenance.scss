@@ -1,0 +1,16 @@
+// Description: Maintenance page styling
+
+@use '../styles/breakpoints';
+@use '../styles/variables';
+
+.requests {
+  max-height: 500px;
+  overflow-y: scroll;
+  @media screen and (max-width: 576px) {
+
+  }
+    
+  .created-at {
+    font-size: 14px;
+  }
+}
