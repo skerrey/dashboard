@@ -9,7 +9,12 @@ import {
   faBuildingColumns,
   faScrewdriverWrench,
   faUser,
-  faGear
+  faGear,
+  faPhone,
+  faEnvelope,
+  faLocationDot,
+  faTrash
+
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -20,5 +25,9 @@ library.add(
   faBuildingColumns,
   faScrewdriverWrench,
   faUser,
-  faGear
+  faGear,
+  faPhone,
+  faEnvelope,
+  faLocationDot,
+  faTrash
 );
