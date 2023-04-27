@@ -6,8 +6,6 @@
 // PrivateLayout 
 .private-layout {
   padding: 20px 20px 20px calc(variables.$sidebar-width + 20px);
-  background-color: variables.$main-content-background;
-  height: calc(100vh - variables.$header-height - 20px); // 20px comes from the header margin
 
   @media screen and (max-width: breakpoints.$sm) {
     padding-left: 20px;
