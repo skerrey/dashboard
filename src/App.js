@@ -1,12 +1,16 @@
 // Description: App.js
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 // Routes
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AuthProvider from "./contexts/AuthContext";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import PublicRoutes from "./routes/PublicRoutes";
+
+// Contexts
+import AuthProvider from './contexts/AuthContext';
+import FirestoreProvider from './contexts/FirestoreContext';
+import StorageProvider from './contexts/StorageContext';
 
 // Pages
 import Home from './pages/Home';
@@ -34,6 +38,8 @@ function App() {
   return (
     <>
       <AuthProvider>
+      <FirestoreProvider>
+      <StorageProvider>
         <Router>
           <Routes>
 
@@ -56,6 +62,8 @@ function App() {
             
           </Routes>
         </Router> 
+      </StorageProvider>
+      </FirestoreProvider>
       </AuthProvider>
     </>
   );
