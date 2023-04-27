@@ -1,19 +1,25 @@
 // Description: Maintenance page
 
 import React, { useEffect, useState, useRef } from 'react';
-import { Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, Badge } from 'react-bootstrap';
 import "./Maintenance.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { db, storage } from '../firebase.config';
 import { useAuth } from '../contexts/AuthContext';
+import { useFirestore } from "../contexts/FirestoreContext";
+import { useStorage } from '../contexts/StorageContext';
 import { v4 as uuidv4 } from 'uuid';
-import { doc, updateDoc, arrayUnion, getDoc  } from 'firebase/firestore';
-import { uploadBytesResumable, ref } from 'firebase/storage';
 
 function ContactUs() {
   const { currentUser } = useAuth();
+  const { uploadFiles } = useStorage();
+  const { updateFirestore, fetchMaintenanceRequests } = useFirestore();
+
+  const userId = currentUser.uid; 
+  const maintenanceId = uuidv4();
+  
   const fileInputRef = useRef();
 
+  const [maintenanceRequests, setMaintenanceRequests] = useState([]);
   const [message, setMessage] = useState("");
   const [issue, setIssue] = useState("");
   const [other, setOther] = useState(false);
@@ -21,75 +27,21 @@ function ContactUs() {
   const [file, setFile] = useState("");
   const [fileArray, setFileArray] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
-  const [maintenanceRequests, setMaintenanceRequests] = useState([]);
   
-  const userId = currentUser.uid; 
-  const maintenanceId = uuidv4();
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const userRef = doc(db, "users", userId);
 
     if (issue === "other") {
       setOther(true);
     }
 
-    const upload = () => {
-      fileArray.forEach((file) => {
-        const storageRef = ref(storage, `/${userId}maintenance/${maintenanceId}/maintenance-images/${file.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
-        uploadTask.on('state_changed',
-          (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
-            setFile("");
-          },
-          (error) => {
-            console.log(error);
-          },
-          () => {
-            console.log('Upload is complete');
-          }
-        );
-      })
-    };
-
-
     try {
-      const currentDate = new Date();
-      const formattedDateDay = currentDate.toLocaleString('en-US', { 
-        month: '2-digit', 
-        day: '2-digit', 
-        year: 'numeric',
-      });
-      const formattedDateHour = currentDate.toLocaleString('en-US', {
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
-      });
-
-      await updateDoc(userRef, {
-        maintenanceRequests: arrayUnion(
-          {
-            _id: maintenanceId,
-            date: {
-              day: formattedDateDay,
-              time: formattedDateHour
-            },
-            hasFiles: file ? true : false,
-            issue: { 
-              issue, 
-              otherMessage
-            },
-            message: message,
-            open: true
-          }
-        )
-      }, { merge: true });
-      upload();
+      await updateFirestore(maintenanceId, file, issue, otherMessage, message);
+      await uploadFiles(fileArray, maintenanceId, userId);
       setSuccessMessage('Your message has been sent!');
 
       // Reset form fields
+      setFile("");
       setMessage("");
       setIssue("");
       setOther(false);
@@ -106,33 +58,16 @@ function ContactUs() {
 
   // Populates maintenance requests
   useEffect(() => {
-    const fetchMaintenanceRequests = async () => {
-      const userRef = doc(db, "users", userId);
-      const userDoc = await getDoc(userRef);
-      if (userDoc.exists()) {
-        setMaintenanceRequests(userDoc.data().maintenanceRequests);
-      }
-    };
-    fetchMaintenanceRequests();
-  }, [message, userId]);
+    fetchMaintenanceRequests(setMaintenanceRequests);
+  }, [maintenanceRequests]);
+
 
   // Iterates through files
   useEffect(() => {
-    if (file) {
-      setFileArray((prevFileArray) => [...prevFileArray, file]);
-    }
+      if (file) {
+        setFileArray((prevFileArray) => [...prevFileArray, file]);
+      }
   }, [file]);
-
-  // Use to show images instead of file names
-    // useEffect(() => {
-    //   if (file) {
-    //     const reader = new FileReader();
-    //     reader.onloadend = () => {
-    //       setFileArray((fileArray) => [...fileArray, reader.result]);
-    //     };
-    //     reader.readAsDataURL(file);
-    //   }
-    // }, [file]);
 
   return (
     <div>
@@ -200,6 +135,7 @@ function ContactUs() {
                       placeholder="Please specify" 
                       type="text" 
                       as="textarea" 
+                      maxLength={15}
                       required
                       rows={1} 
                       value={otherMessage} 
@@ -225,13 +161,6 @@ function ContactUs() {
                   </div>
                 ))}  
 
-                {/* Show Images instead of file name */}
-                  {/* {fileArray && fileArray.map((file, index) => (
-                    <div key={index}>
-                      <img src={file} alt="" style={{width: "100px"}} />
-                    </div>
-                  ))} */}
-
                 <div className="text-muted mb-3">
                     Please allow for a 24 hour response time. <br/>
                 </div>
@@ -248,21 +177,26 @@ function ContactUs() {
         <Card className="card-maintenance">
           <Card.Body>
             <Card.Title>Previous Requests</Card.Title>
+              <hr className="text-muted" />
               <div className="requests">
-                {maintenanceRequests && [...maintenanceRequests].reverse().map((data) => (
-                  <div key={data._id}>
 
-                    <div className="p-1 fw-bold">
-                      {data.issue.issue} Issue {data.issue.otherMessage && <>- {data.issue.otherMessage}</>}
+                {maintenanceRequests && [...maintenanceRequests].reverse().map((data, index) => (
+                  <div key={index}>
+                    <div className="d-flex justify-content-between pe-2 pb-2">
+                      <div className="fw-bold">
+                        {data.issue.issue} Issue {data.issue.otherMessage && <>- {data.issue.otherMessage}</>}
+                      </div>
+                      <div>
+                        {data.open ? <Badge bg="danger">Open</Badge> : <Badge bg="success">Closed</Badge>}
+                      </div>
                     </div>
-                    <div className="text-muted">{data.issue.issue}</div>
-                    <div className="text-muted">{data.issue.otherMessage}</div>
-                    <div className="text-muted">{data.message}</div>
-                    <div className="text-muted">{data.open.toString()}</div>
-                    <div className="created-at">Maintenance request was created on <strong>{data.date.day}</strong> at <strong>{data.date.time}</strong></div>
+                    <div className="text-muted border me-2 mb-2 bg-light">{data.message}</div>
+                    <div className="created-at pb-2">Maintenance request created on <strong>{data.date.day}</strong> at <strong>{data.date.time}</strong></div>
+                    <div className="text-muted maintenance-id">Maintenance ID: {data._id}</div>
                     <hr/>
                   </div>
                 ))}
+                          
               </div>
           </Card.Body>
         </Card>
