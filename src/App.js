@@ -27,6 +27,7 @@ import GuestLayout from "./layouts/GuestLayout";
 
 // Styling
 import './App.scss';
+import './styles/_global.scss';
 import "./utils/FontAwesomeIcons";
 
 function App() {
