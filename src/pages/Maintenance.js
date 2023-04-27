@@ -10,11 +10,10 @@ import { useStorage } from '../contexts/StorageContext';
 import { v4 as uuidv4 } from 'uuid';
 
 function ContactUs() {
-  const { currentUser } = useAuth();
+  const { userId } = useAuth();
   const { uploadFiles } = useStorage();
-  const { updateFirestore, fetchMaintenanceRequests } = useFirestore();
+  const { addMaintenanceRequest, getMaintenanceRequests } = useFirestore();
 
-  const userId = currentUser.uid; 
   const maintenanceId = uuidv4();
   
   const fileInputRef = useRef();
@@ -36,8 +35,8 @@ function ContactUs() {
     }
 
     try {
-      await updateFirestore(maintenanceId, file, issue, otherMessage, message);
-      await uploadFiles(fileArray, maintenanceId, userId);
+      addMaintenanceRequest(userId, maintenanceId, file, issue, otherMessage, message);
+      uploadFiles(userId, fileArray, maintenanceId);
       setSuccessMessage('Your message has been sent!');
 
       // Reset form fields
@@ -58,8 +57,8 @@ function ContactUs() {
 
   // Populates maintenance requests
   useEffect(() => {
-    fetchMaintenanceRequests(setMaintenanceRequests);
-  }, [maintenanceRequests]);
+    getMaintenanceRequests(userId, setMaintenanceRequests);
+  }, [message]);
 
 
   // Iterates through files
@@ -152,7 +151,7 @@ function ContactUs() {
                 {/* Iterate over files to display file names and delete button */}
                 {fileArray && fileArray.map((file, index) => (
                   <div key={index}>
-                    <div className="rounded p-2 d-inline-block">{file.name}</div>
+                    <div className="rounded p-2 d-inline-block text-break">{file.name}</div>
                     <Button variant="danger" size="sm" onClick={() => {
                       setFileArray(fileArray.filter((f) => f.name !== file.name));
                     }}>
@@ -187,7 +186,7 @@ function ContactUs() {
                         {data.issue.issue} Issue {data.issue.otherMessage && <>- {data.issue.otherMessage}</>}
                       </div>
                       <div>
-                        {data.open ? <Badge bg="danger">Open</Badge> : <Badge bg="success">Closed</Badge>}
+                        {data.status.open ? <Badge bg="danger">Open</Badge> : <Badge bg="success">Closed</Badge>}
                       </div>
                     </div>
                     <div className="text-muted border me-2 mb-2 bg-light">{data.message}</div>

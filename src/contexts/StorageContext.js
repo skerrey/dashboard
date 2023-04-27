@@ -13,7 +13,7 @@ export function useStorage() {
 export default function StorageProvider({ children }) {
 
   // Upload files to Firebase Storage 
-  const uploadFiles = (fileArray, maintenanceId, userId) => {
+  const uploadFiles = (userId, fileArray, maintenanceId) => {
     fileArray.forEach((file) => {
       const storageRef = ref(storage, `/${userId}/maintenance/${maintenanceId}/maintenance-images/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
