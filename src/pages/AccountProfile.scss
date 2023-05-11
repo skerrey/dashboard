@@ -1,0 +1,40 @@
+// Description: AccountProfile styles
+
+@use "../styles/variables";
+@use "../styles/breakpoints";
+
+.account-profile {
+
+  // Circular Progress Bar
+  .cpb-parent { 
+    width: 130px;
+  }
+
+  .icon-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+  }
+
+  .icon-circle-activated {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: variables.$bs-blue;
+    color: variables.$bs-white;
+    border-radius: 50%;
+    padding: 15px 13px;
+  }
+
+  .icon-circle-not-activated {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid variables.$bs-blue;
+    color: variables.$bs-gray-dark;
+    border-radius: 50%;
+    padding: 14px 12px;
+  }
+
+}
