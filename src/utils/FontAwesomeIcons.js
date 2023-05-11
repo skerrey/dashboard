@@ -13,7 +13,9 @@ import {
   faPhone,
   faEnvelope,
   faLocationDot,
-  faTrash
+  faTrash,
+  faUserPlus,
+  faCreditCard,
 
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -29,5 +31,7 @@ library.add(
   faPhone,
   faEnvelope,
   faLocationDot,
-  faTrash
+  faTrash,
+  faUserPlus,
+  faCreditCard,
 );
