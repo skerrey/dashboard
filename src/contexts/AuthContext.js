@@ -95,8 +95,23 @@ export default function AuthProvider({ children }) {
     })
   };
 
-  function verifyPassword(email, password) { // Verify password 
-    return signInWithEmailAndPassword(auth, email, password)
+  // function verifyPassword(email, password) { // Verify password 
+  //   return signInWithEmailAndPassword(auth, email, password)
+  //     .then(() => {
+  //       return true;
+  //     })
+  //     .catch(() => {
+  //       return false;
+  //     });
+  // }
+
+  function verifyPassword(password) { // Verify password 
+    const credential = EmailAuthProvider.credential(
+      auth.currentUser.email,
+      password,
+    )
+  
+    return reauthenticateWithCredential(auth.currentUser, credential)
       .then(() => {
         return true;
       })
