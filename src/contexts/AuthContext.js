@@ -25,7 +25,8 @@ export default function AuthProvider({ children }) {
   const [userId, setUserId] = useState();
   const [loading, setLoading] = useState(true);
 
-  function signup(firstName, lastName, email, password) { // Signup
+   // Signup
+  function signup(firstName, lastName, email, password) {
     return createUserWithEmailAndPassword(auth, email, password)
 
     // Add user to database
@@ -47,7 +48,8 @@ export default function AuthProvider({ children }) {
     })
   };
 
-  function updateInfo(name) { // Update user info
+  // Update user info
+  function updateInfo(name) { 
     return updateProfile(auth.currentUser, {displayName: name})
 
     // Update user info in database
@@ -69,19 +71,23 @@ export default function AuthProvider({ children }) {
     })
   };
   
-  function login(email, password) { // Login
+  // Login
+  function login(email, password) { 
     return signInWithEmailAndPassword(auth, email, password); // Change this function to log into server (firebase alternative)
   };
 
-  function logout() { // Logout
+  // Logout
+  function logout() { 
     return auth.signOut();
   };
 
-  function resetPassword(email) { // Reset password
+  // Reset password
+  function resetPassword(email) { 
     return sendPasswordResetEmail(auth, email);
   };
 
-  function updateEmail(email) { // Update email
+  // Update email
+  function updateEmail(email) { 
     return currentUser.updateEmail(email)
 
     // Update email in database
@@ -95,17 +101,8 @@ export default function AuthProvider({ children }) {
     })
   };
 
-  // function verifyPassword(email, password) { // Verify password 
-  //   return signInWithEmailAndPassword(auth, email, password)
-  //     .then(() => {
-  //       return true;
-  //     })
-  //     .catch(() => {
-  //       return false;
-  //     });
-  // }
-
-  function verifyPassword(password) { // Verify password 
+  // Verify password
+  function verifyPassword(password) {
     const credential = EmailAuthProvider.credential(
       auth.currentUser.email,
       password,
@@ -120,7 +117,8 @@ export default function AuthProvider({ children }) {
       });
   }
 
-  function updateUserPassword(newPassword) { // Update password on signup
+  // Update password
+  function updateUserPassword(newPassword) { 
     return updatePassword(auth.currentUser, newPassword)
   };
 
