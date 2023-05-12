@@ -116,13 +116,12 @@ function AccountProfile() {
   async function handleSubmitUserPassword(e) { 
     e.preventDefault();
 
-    const email = currentUser.email;
     const oldPassword = oldPasswordRef.current.value;
     const newPassword = newPasswordRef.current.value;
     const confirmNewPassword = confirmNewPasswordRef.current.value;
 
     // check if current password is correct from firebase
-    const isPasswordCorrect = await verifyPassword(email, oldPassword);
+    const isPasswordCorrect = await verifyPassword(oldPassword);
     if (!isPasswordCorrect) { 
       return setErrorPassword('Current password is incorrect')
     }
