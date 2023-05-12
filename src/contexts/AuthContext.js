@@ -6,7 +6,10 @@ import {
   createUserWithEmailAndPassword, 
   updateProfile, 
   signInWithEmailAndPassword,
-  sendPasswordResetEmail
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  sendPasswordResetEmail,
+  updatePassword
 } from 'firebase/auth';
 
 import { doc, setDoc } from "firebase/firestore";
@@ -48,14 +51,22 @@ export default function AuthProvider({ children }) {
     return updateProfile(auth.currentUser, {displayName: name})
 
     // Update user info in database
-    // .then(async () => {
-    //   try {
-    //     const ref = doc(db, "users", auth.currentUser.uid)
-    //     await setDoc(ref, { name }, { merge: true })
-    //   } catch (e) {
-    //     console.error("Error updating document: ", e);
-    //   }
-    // })
+    .then(async () => {
+      try {
+        const ref = doc(db, "users", auth.currentUser.uid);
+        // Destructure first and last name from name
+        const firstName = name.split(" ")[0]; 
+        const lastName = name.split(" ")[1];
+        await setDoc(ref, { 
+          name: { 
+            firstName: firstName, 
+            lastName: lastName 
+          } 
+        }, { merge: true })
+      } catch (e) {
+        console.error("Error updating document: ", e);
+      }
+    })
   };
   
   function login(email, password) { // Login
@@ -84,8 +95,18 @@ export default function AuthProvider({ children }) {
     })
   };
 
-  function updatePassword(password) { // Update password
-    return currentUser.updatePassword(password);
+  function verifyPassword(email, password) { // Verify password 
+    return signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+  }
+
+  function updateUserPassword(newPassword) { // Update password on signup
+    return updatePassword(auth.currentUser, newPassword)
   };
 
   useEffect(() => { // set user on mount
@@ -106,7 +127,8 @@ export default function AuthProvider({ children }) {
     logout,
     resetPassword,
     updateEmail,
-    updatePassword,
+    updateUserPassword,
+    verifyPassword,
     updateInfo
   };
 
