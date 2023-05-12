@@ -1,15 +1,28 @@
 // Description: Header component
 
-import React from 'react';
+import React, { useState } from 'react';
 import './Header.scss';
 import logo from "../images/logo.svg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-
-import LogoutFunction from '../utils/LogoutFunction';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 function Header() {
-  const { handleLogout } = LogoutFunction();
+  const [error, setError] = useState('');
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleLogout() { // logout user on click
+    setError('');
+
+    try {
+      await logout();
+      navigate('/login');
+    } catch {
+      setError('Failed to log out');
+      console.log(error);
+    }
+  }
 
   return (
     <div className="header">
