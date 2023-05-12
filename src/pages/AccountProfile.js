@@ -10,12 +10,13 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 function AccountProfile() {
-  const { currentUser, updatePassword, updateEmail, updateInfo } = useAuth();
+  const { currentUser, updateUserPassword, updateEmail, updateInfo, verifyPassword } = useAuth();
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const emailRef = useRef();
-  const passwordRef = useRef();
-  const passwordConfirmRef = useRef();
+  const oldPasswordRef = useRef();
+  const newPasswordRef = useRef();
+  const confirmNewPasswordRef = useRef();
 
   const [errorUserDetails, setErrorUserDetails] = useState('');
   const [errorPassword, setErrorPassword] = useState('');
@@ -112,39 +113,52 @@ function AccountProfile() {
   }
 
   // Update user password
-  function handleSubmitUserPassword(e) { 
+  async function handleSubmitUserPassword(e) { 
     e.preventDefault();
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) { // check if passwords match
+
+    const email = currentUser.email;
+    const oldPassword = oldPasswordRef.current.value;
+    const newPassword = newPasswordRef.current.value;
+    const confirmNewPassword = confirmNewPasswordRef.current.value;
+
+    // check if current password is correct from firebase
+    const isPasswordCorrect = await verifyPassword(email, oldPassword);
+    if (!isPasswordCorrect) { 
+      return setErrorPassword('Current password is incorrect')
+    }
+
+    if (oldPassword && !newPassword) { // check if new password is empty
+      return setErrorPassword('New password cannot be empty')
+    }
+
+    if (newPassword !== confirmNewPassword) { // check if passwords match
       return setErrorPassword('Passwords do not match')
     }
 
-    const promises = []; // Update password
-    setLoading(true);
-    setErrorPassword('');
 
-    if (passwordRef.current.value) {
-      promises.push(updatePassword(passwordRef.current.value))
-    }
-    
-    Promise.all(promises).then(() => {
+    try { // try to update user password
+      setErrorPassword('');
+      setLoading(true);
+      await updateUserPassword(newPassword);
       setSuccessPassword('Password successfully updated');
+
+      // Clear input fields
+      oldPasswordRef.current.value = '';
+      newPasswordRef.current.value = '';
+      confirmNewPasswordRef.current.value = '';
+
       setTimeout(() => {
         setSuccessPassword('');
       }, 3000); 
-    }).catch(() => {
+    } catch (e) {
       setErrorPassword('Failed to update account');
-      setTimeout(() => {
-        setErrorPassword('');
-      }, 3000); 
-    }).finally(() => {
-      setLoading(false);
-    })
+      console.log(e);
+    }
+    setLoading(false);
   }
 
   // Split up current user's name into first and last name
   var nameArr = currentUser.displayName.split(/\s+/);
-
-  console.log("currentUser: ", currentUser);
 
   return (
     <div className="account-profile">
@@ -225,7 +239,7 @@ function AccountProfile() {
               <Form onSubmit={handleSubmitUserDetails}>
                 <Form.Group id="first-name">
                   <Form.Label>First Name</Form.Label>
-                  <Form.Control aria-labelledby="first-name" type="text" autoComplete="first-name" ref={firstNameRef} required defaultValue={nameArr[0]} />
+                  <Form.Control aria-labelledby="first-name" type="text" autoComplete="given-name" ref={firstNameRef} required defaultValue={nameArr[0]} />
                 </Form.Group>
                 <Form.Group id="last-name">
                   <Form.Label>Last Name</Form.Label>
@@ -250,13 +264,17 @@ function AccountProfile() {
             <Form onSubmit={handleSubmitUserPassword}>
               {errorPassword && <Alert variant="danger">{errorPassword}</Alert>}
               {successPassword && <Alert variant="success">{successPassword}</Alert>}
-              <Form.Group id="password" className="my-2">
-                <Form.Label>Password</Form.Label>
-                <Form.Control aria-labelledby="password" type="password"  autoComplete="new-password" ref={passwordRef} placeholder='Leave blank to keep the same' />
+              <Form.Group id="old-password" className="my-2">
+                <Form.Label>Current Password</Form.Label>
+                <Form.Control aria-labelledby="old-password" type="password"  autoComplete="current-password" ref={oldPasswordRef} />
               </Form.Group>
-              <Form.Group id="password-confirm">
-                <Form.Label>Password Confirmation</Form.Label>
-                <Form.Control aria-labelledby="password-confirm" type="password" autoComplete="new-password" ref={passwordConfirmRef} placeholder='Leave blank to keep the same' />
+              <Form.Group id="new-password" className="my-2">
+                <Form.Label>New Password</Form.Label>
+                <Form.Control aria-labelledby="new-password" type="password"  autoComplete="new-password" ref={newPasswordRef} />
+              </Form.Group>
+              <Form.Group id="confirm-new-password">
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control aria-labelledby="confirm-new-password" type="password" autoComplete="new-password" ref={confirmNewPasswordRef} />
               </Form.Group>
               <Button disabled={loading} className="mt-3" type="submit">
                 Update Password
