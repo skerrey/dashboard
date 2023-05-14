@@ -82,7 +82,7 @@ function AccountProfile() {
   }
 
   // Update user details
-  function handleSubmitUserDetails(e) {
+  async function handleSubmitUserDetails(e) {
     e.preventDefault();
 
     const name = firstNameRef.current.value + " " + lastNameRef.current.value;
@@ -96,31 +96,28 @@ function AccountProfile() {
         .join(' ');
     };
 
-    const promises = []; // Update email and username
-    setLoading(true);
-    setErrorUserDetails('');
-
-    if (name !== currentUser.displayName) {
-      promises.push(updateInfo(capitalize(name)))
-    }
-
-    if (emailRef.current.value !== currentUser.email) {
-      promises.push(updateUserEmail(emailRef.current.value))
-    }
-    Promise.all(promises).then(() => {
+    try {
+      setErrorUserDetails('');
+      setLoading(true);
+      await updateInfo(capitalize(name));
+      await updateUserEmail(emailRef.current.value);
       setSuccessUserDetails('Account successfully updated');
-      setTimeout(() => {
+      setTimeout(() => { 
         setSuccessUserDetails('');
-      }, 3000); 
-    }).catch(() => {
-      setErrorUserDetails('Failed to update account');
-      setTimeout(() => {
-        setErrorUserDetails('');
-      }, 3000); 
-    }).finally(() => {
-      setLoading(false);
-    })
+      }, 3000);
+    } catch (e) {
+      if (e.code === 'auth/email-already-in-use') {
+        setErrorUserDetails('An account with that email already exists');
+      } else if (e.code === 'auth/invalid-email') {
+        setErrorUserDetails('Invalid email format');
+      } else {
+        setErrorUserDetails('Failed to update account');
+      }
+      console.log(e);
+    }
+    setLoading(false);
   }
+
 
   function handleEmailVerify() {
     verifyEmail();
