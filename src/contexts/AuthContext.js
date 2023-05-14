@@ -9,7 +9,9 @@ import {
   reauthenticateWithCredential,
   EmailAuthProvider,
   sendPasswordResetEmail,
-  updatePassword
+  updateEmail,
+  updatePassword, 
+  sendEmailVerification
 } from 'firebase/auth';
 
 import { doc, setDoc } from "firebase/firestore";
@@ -87,19 +89,24 @@ export default function AuthProvider({ children }) {
   };
 
   // Update email
-  function updateEmail(email) { 
-    return currentUser.updateEmail(email)
+  function updateUserEmail(newEmail) { 
+    return updateEmail(auth.currentUser, newEmail)
 
     // Update email in database
     .then(async () => {
       try {
         const ref = doc(db, "users", auth.currentUser.uid)
-        await setDoc(ref, { email }, { merge: true })
+        await setDoc(ref, { newEmail }, { merge: true })
       } catch (e) {
         console.error("Error updating document: ", e);
       }
     })
   };
+
+  // Verify email
+  function verifyEmail() {
+    return sendEmailVerification(auth.currentUser);
+  }
 
   // Verify password
   function verifyPassword(password) {
@@ -139,7 +146,8 @@ export default function AuthProvider({ children }) {
     signup,
     logout,
     resetPassword,
-    updateEmail,
+    updateUserEmail,
+    verifyEmail,
     updateUserPassword,
     verifyPassword,
     updateInfo
