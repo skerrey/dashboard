@@ -88,15 +88,49 @@ export default function AuthProvider({ children }) {
     return sendPasswordResetEmail(auth, email);
   };
 
+  // Update phone number
+  // function updatePhone(phone) {
+  //   const credential = EmailAuthProvider.credential(
+  //     auth.currentUser.email,
+  //     phone,
+  //   )
+  //   return reauthenticateWithCredential(auth.currentUser, credential)
+  //   .then(() => {
+  //     return true;
+  //   })
+  //   .catch(() => {
+  //     return false;
+  //   })
+
+  //   // Update phone number in database
+  //   .then(async () => {
+  //     try {
+  //       const ref = doc(db, "users", auth.currentUser.uid)
+  //       await setDoc(ref, { phone }, { merge: true })
+  //     } catch (e) {
+  //       console.error("Error updating document: ", e);
+  //     }
+  //   })
+  // };
+  async function updatePhone(phone) {
+    try {
+      const ref = doc(db, "users", auth.currentUser.uid)
+      await setDoc(ref, { phone }, { merge: true })
+    } catch (e) {
+      console.error("Error updating document: ", e);
+    }
+  };
+
+
   // Update email
-  function updateUserEmail(newEmail) { 
-    return updateEmail(auth.currentUser, newEmail)
+  function updateUserEmail(email) { 
+    return updateEmail(auth.currentUser, email)
 
     // Update email in database
     .then(async () => {
       try {
         const ref = doc(db, "users", auth.currentUser.uid)
-        await setDoc(ref, { newEmail }, { merge: true })
+        await setDoc(ref, { email }, { merge: true })
       } catch (e) {
         console.error("Error updating document: ", e);
       }
@@ -146,6 +180,7 @@ export default function AuthProvider({ children }) {
     signup,
     logout,
     resetPassword,
+    updatePhone,
     updateUserEmail,
     verifyEmail,
     updateUserPassword,
