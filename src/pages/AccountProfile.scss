@@ -37,4 +37,20 @@
     padding: 14px 12px;
   }
 
+  .btn-verify-email {
+    background-color: transparent;
+    margin: -5px -10px;
+    border-color: transparent;
+    color: #000;
+    font-weight: 500;
+    display: flex-box;
+    &:hover {
+      background-color: rgba(0,0,0,0.1);
+      border-color: transparent;
+    }
+    &:active {
+      background-color: rgba(0,0,0,0.4);
+      color: #000;
+    }
+  }
 }
