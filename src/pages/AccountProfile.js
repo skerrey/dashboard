@@ -1,7 +1,7 @@
 // Description: Account Profile page
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, Alert, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import "./AccountProfile.scss";
 
@@ -10,7 +10,15 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 function AccountProfile() {
-  const { currentUser, updateUserPassword, updateEmail, updateInfo, verifyPassword } = useAuth();
+  
+  const { 
+    currentUser, 
+    updateUserPassword, 
+    updateUserEmail, 
+    updateInfo, 
+    verifyEmail,
+    verifyPassword,
+  } = useAuth();
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const emailRef = useRef();
@@ -22,10 +30,12 @@ function AccountProfile() {
   const [errorPassword, setErrorPassword] = useState('');
   const [successUserDetails, setSuccessUserDetails] = useState('');
   const [successPassword, setSuccessPassword] = useState('');
+  const [emailVerifyClicked, setEmailVerifyClicked] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  
+  // Current user details
   const userPhone = currentUser.phoneNumber;
-  const userEmailVerified = currentUser.emailVerified;
+  const [userEmailVerified, setUserEmailVerified] = useState(currentUser.emailVerified);
   const userCreatedAt = currentUser.metadata.creationTime;
 
   // Get time difference between now and creation time
@@ -95,7 +105,7 @@ function AccountProfile() {
     }
 
     if (emailRef.current.value !== currentUser.email) {
-      promises.push(updateEmail(emailRef.current.value))
+      promises.push(updateUserEmail(emailRef.current.value))
     }
     Promise.all(promises).then(() => {
       setSuccessUserDetails('Account successfully updated');
@@ -110,6 +120,14 @@ function AccountProfile() {
     }).finally(() => {
       setLoading(false);
     })
+  }
+
+  function handleEmailVerify() {
+    verifyEmail();
+    setEmailVerifyClicked(true);
+    setTimeout(() => {
+      setEmailVerifyClicked(false);
+    }, 4000);
   }
 
   // Update user password
@@ -134,7 +152,6 @@ function AccountProfile() {
       return setErrorPassword('Passwords do not match')
     }
 
-
     try { // try to update user password
       setErrorPassword('');
       setLoading(true);
@@ -158,6 +175,10 @@ function AccountProfile() {
 
   // Split up current user's name into first and last name
   var nameArr = currentUser.displayName.split(/\s+/);
+
+  useEffect(() => {
+    setUserEmailVerified(currentUser.emailVerified);
+  }, [currentUser.emailVerified]);
 
   return (
     <div className="account-profile">
@@ -236,18 +257,41 @@ function AccountProfile() {
               {errorUserDetails && <Alert variant="danger">{errorUserDetails}</Alert>}
               {successUserDetails && <Alert variant="success">{successUserDetails}</Alert>}
               <Form onSubmit={handleSubmitUserDetails}>
-                <Form.Group id="first-name">
+                <Form.Group id="first-name" >
                   <Form.Label>First Name</Form.Label>
                   <Form.Control aria-labelledby="first-name" type="text" autoComplete="given-name" ref={firstNameRef} required defaultValue={nameArr[0]} />
                 </Form.Group>
-                <Form.Group id="last-name">
+                <Form.Group id="last-name" className="my-2">
                   <Form.Label>Last Name</Form.Label>
                   <Form.Control aria-labelledby="last-name" type="text" autoComplete="family-name" ref={lastNameRef} required defaultValue={nameArr[1]} />
                 </Form.Group>
-                <Form.Group id="email">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control aria-labelledby="email" type="email" autoComplete="email"  ref={emailRef} required defaultValue={currentUser.email}/>
-                </Form.Group>
+
+                {/* Conditional form group for users w/ and w/out email verified */}
+                {userEmailVerified === true ?
+                  <Form.Group id="email" className="my-2">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control aria-labelledby="email" type="email" autoComplete="email"  ref={emailRef} required defaultValue={currentUser.email}/>
+                  </Form.Group>
+                :
+                  <Form.Group id="email" className="my-2">
+                    <Form.Label>Email</Form.Label>
+                    <InputGroup>
+                      <Form.Control aria-labelledby="email" type="email" autoComplete="email"  ref={emailRef} required defaultValue={currentUser.email}/>
+                      <InputGroup.Text id="email-verify">
+                        <Button className="btn-verify-email" onClick={handleEmailVerify}>
+                          <FontAwesomeIcon icon="fa-solid fa-envelope" /> 
+                          &nbsp; Verify Email
+                        </Button>
+                      </InputGroup.Text>
+                    </InputGroup>
+                    {emailVerifyClicked &&
+                      <Alert variant="success" className="p-1 mt-2 ms-auto">
+                      An email verification has been sent your inbox.
+                      </Alert>
+                    }
+                  </Form.Group>
+                }
+                
                 <Button disabled={loading} className="mt-3" type="submit">
                   Update User Details
                 </Button>
