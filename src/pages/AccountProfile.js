@@ -6,14 +6,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import "./AccountProfile.scss";
 
 import { useAuth } from '../contexts/AuthContext';
+import { db } from '../firebase.config';
+import { doc, getDoc } from "firebase/firestore";
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 function AccountProfile() {
   
   const { 
+    userId,
     currentUser, 
     updateUserPassword, 
+    updatePhone,
     updateUserEmail, 
     updateInfo, 
     verifyEmail,
@@ -22,6 +26,8 @@ function AccountProfile() {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const emailRef = useRef();
+  const phoneRef = useRef();
+  const verifyPasswordRef = useRef();
   const oldPasswordRef = useRef();
   const newPasswordRef = useRef();
   const confirmNewPasswordRef = useRef();
@@ -29,6 +35,7 @@ function AccountProfile() {
   const [errorUserDetails, setErrorUserDetails] = useState('');
   const [errorPassword, setErrorPassword] = useState('');
   const [successUserDetails, setSuccessUserDetails] = useState('');
+  const [verifyPasswordIfInactive, setVerifyPasswordIfInactive] = useState(false);
   const [successPassword, setSuccessPassword] = useState('');
   const [emailVerifyClicked, setEmailVerifyClicked] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -81,6 +88,36 @@ function AccountProfile() {
     return percentage;
   }
 
+  // Re-enter password to update email
+  // function verifyPasswordIfInactive() {
+  //   const password = prompt("Please enter your password to update your email");
+  //   if (password != null) {
+  //     verifyPassword(password).then((result) => {
+  //       if (result === true) {
+  //         updateUserEmail(emailRef.current.value)
+  //       } else {
+  //         alert("Incorrect password");
+  //       }
+  //     });
+  //   }
+  // }
+
+  // Get user phone from firestore
+  function getPhone() {
+    const docRef = doc(db, "users", userId);
+    getDoc(docRef).then((doc) => {
+      if (doc.exists()) {
+        const data = doc.data();
+        const userPhone = data.phone;
+          return userPhone;
+
+      }
+    }).catch((error) => {
+      console.log("Error getting document:", error);
+    });
+    console.log(userPhone);
+  }
+
   // Update user details
   async function handleSubmitUserDetails(e) {
     e.preventDefault();
@@ -99,17 +136,25 @@ function AccountProfile() {
     try {
       setErrorUserDetails('');
       setLoading(true);
+      if(verifyPasswordIfInactive === true) {
+        await verifyPassword(verifyPasswordRef.current.value);
+      }
       await updateInfo(capitalize(name));
+      await updatePhone(phoneRef.current.value);
       await updateUserEmail(emailRef.current.value);
       setSuccessUserDetails('Account successfully updated');
       setTimeout(() => { 
         setSuccessUserDetails('');
       }, 3000);
+      setVerifyPasswordIfInactive(false);
     } catch (e) {
       if (e.code === 'auth/email-already-in-use') {
         setErrorUserDetails('An account with that email already exists');
       } else if (e.code === 'auth/invalid-email') {
         setErrorUserDetails('Invalid email format');
+      } else if (e.code === 'auth/requires-recent-login') {
+        setErrorUserDetails('Please verify your password to update your email');
+        setVerifyPasswordIfInactive(true);
       } else {
         setErrorUserDetails('Failed to update account');
       }
@@ -118,7 +163,7 @@ function AccountProfile() {
     setLoading(false);
   }
 
-
+  // Send email verification
   function handleEmailVerify() {
     verifyEmail();
     setEmailVerifyClicked(true);
@@ -176,6 +221,9 @@ function AccountProfile() {
   useEffect(() => {
     setUserEmailVerified(currentUser.emailVerified);
   }, [currentUser.emailVerified]);
+
+  console.log("currentUser: " + currentUser);
+  console.log(userId.email);
 
   return (
     <div className="account-profile">
@@ -262,6 +310,10 @@ function AccountProfile() {
                   <Form.Label>Last Name</Form.Label>
                   <Form.Control aria-labelledby="last-name" type="text" autoComplete="family-name" ref={lastNameRef} required defaultValue={nameArr[1]} />
                 </Form.Group>
+                <Form.Group id="phone" className="my-2">
+                  <Form.Label>Phone</Form.Label>
+                  <Form.Control aria-labelledby="phone" type="tel" autoComplete="tel" ref={phoneRef} required defaultValue={getPhone()} />
+                </Form.Group>
 
                 {/* Conditional form group for users w/ and w/out email verified */}
                 {userEmailVerified === true ?
@@ -286,6 +338,13 @@ function AccountProfile() {
                       An email verification has been sent your inbox.
                       </Alert>
                     }
+                  </Form.Group>
+                }
+
+                {verifyPasswordIfInactive === true &&
+                  <Form.Group id="verify-password" className="my-2">
+                    <Form.Label>Verify Password</Form.Label>
+                    <Form.Control aria-labelledby="verify-password" type="password" autoComplete="current-password" ref={verifyPasswordRef} required />
                   </Form.Group>
                 }
                 
