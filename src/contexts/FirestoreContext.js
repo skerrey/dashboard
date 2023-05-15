@@ -1,9 +1,10 @@
 // Description: Authentication Context for Firebase
 
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { db} from '../firebase.config';
-import { doc, updateDoc, arrayUnion, getDoc  } from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, getDoc, onSnapshot } from 'firebase/firestore';
 import FormattedDate from '../utils/FormattedDate';
+import { useAuth } from '../contexts/AuthContext';
 
 const FirestoreContext = React.createContext();
 
@@ -12,6 +13,8 @@ export function useFirestore() {
 };
 
 export default function FirestoreProvider({ children }) {
+  const { currentUser } = useAuth();
+  const [userData, setUserData] = useState();
   const { formattedDateDay, formattedDateHour } = FormattedDate();
 
   // Add Maintenance request to Firestore database
@@ -79,7 +82,23 @@ export default function FirestoreProvider({ children }) {
     return null;
   };
 
+  useEffect(() => {
+    if (currentUser) {
+      // Set up Firestore snapshot listener
+      const userRef = doc(db, "users", currentUser.uid);
+      const unsubscribe = onSnapshot(userRef, (doc) => {
+        if (doc.exists()) {
+          setUserData(doc.data());
+        }
+      });
+
+      // Clean up subscription on unmount
+      return () => unsubscribe();
+    }
+  }, [currentUser]);
+
   const value = {
+    userData,
     addMaintenanceRequest,
     getMaintenanceRequests,
     addContactUsMessage,
