@@ -5,27 +5,28 @@ import { Col, Card, Form, Button, Alert, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAuth } from '../contexts/AuthContext';
-import { db } from '../firebase.config';
-import { doc, getDoc } from "firebase/firestore";
+import { useFirestore } from '../contexts/FirestoreContext';
+
+import Input from 'react-phone-number-input/input';
+import 'react-phone-number-input/style.css';
 
 function AccountProfileUserDetails() {
   const { 
     userId,
     currentUser, 
     updatePhone,
-    updateUserEmail, 
+    updateUserEmail,
     updateInfo, 
     verifyEmail,
     verifyPassword,
   } = useAuth();
+  const { getUserPhone } = useFirestore(); 
 
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const emailRef = useRef();
   const phoneRef = useRef();
   const verifyPasswordRef = useRef();
-
-  const userPhone = currentUser.phoneNumber;
   
   const [errorUserDetails, setErrorUserDetails] = useState('');
   const [successUserDetails, setSuccessUserDetails] = useState('');
@@ -33,6 +34,7 @@ function AccountProfileUserDetails() {
   const [emailVerifyClicked, setEmailVerifyClicked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userEmailVerified, setUserEmailVerified] = useState(currentUser.emailVerified);
+  const [userPhone, setUserPhone] = useState('');
 
   // Split up current user's name into first and last name
   var nameArr = currentUser.displayName.split(/\s+/);
@@ -46,28 +48,17 @@ function AccountProfileUserDetails() {
       .join(' ');
   };
 
-  // Get user phone from firestore
-  function getPhone() {
-    const docRef = doc(db, "users", userId);
-    getDoc(docRef).then((doc) => {
-      if (doc.exists()) {
-        const data = doc.data();
-        const userPhone = data.phone;
-          return userPhone;
-
-      }
-    }).catch((error) => {
-      console.log("Error getting document:", error);
-    });
-    console.log(userPhone);
-  }
-
   // Update user details
   async function handleSubmitUserDetails(e) {
     e.preventDefault();
 
     // Join current user's first and last name
     const name = firstNameRef.current.value + " " + lastNameRef.current.value;
+
+    if (phoneRef.current.value.length !== 14) {
+      setErrorUserDetails('Invalid phone number');
+      return;
+    }
 
     try {
       setErrorUserDetails('');
@@ -115,8 +106,19 @@ function AccountProfileUserDetails() {
     setUserEmailVerified(currentUser.emailVerified);
   }, [currentUser.emailVerified]);
 
+  // Get user phone from Firestore
+  useEffect(() => {
+    getUserPhone(userId)
+      .then((phone) => {
+        setUserPhone(phone);
+      })
+      .catch((error) => {
+        console.log("Error getting user phone:", error);
+      });
+  }, [getUserPhone, userId]);
+
   return (
-    <Col className="col">
+    <Col className="col ap-user-details">
       <Card className="card-account">
         <Card.Body>
           <Card.Title>User Details</Card.Title>
@@ -134,7 +136,19 @@ function AccountProfileUserDetails() {
               </Form.Group>
               <Form.Group id="phone" className="my-2">
                 <Form.Label>Phone</Form.Label>
-                <Form.Control aria-labelledby="phone" type="tel" autoComplete="tel" ref={phoneRef} required defaultValue={getPhone()} />
+                <br/>
+                <Input
+                  aria-labelledby="phone"
+                  autoComplete="tel"
+                  ref={phoneRef}
+                  international={false}
+                  country="US"
+                  placeholder={userPhone}
+                  value={userPhone}
+                  onChange={setUserPhone}
+                  className="phone-input"
+                  maxLength="14"
+                />
               </Form.Group>
 
               {/* Conditional form group for users w/ and w/out email verified */}
