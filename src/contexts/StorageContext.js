@@ -1,7 +1,7 @@
 // Description: Authentication Context for Firebase
 
 import React, { useContext } from 'react';
-import { storage} from '../firebase.config';
+import { storage } from '../firebase.config';
 import { uploadBytesResumable, ref } from 'firebase/storage';
 
 const StorageContext = React.createContext();
