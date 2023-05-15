@@ -1,28 +1,46 @@
 // Description: Progress bar for account profile
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAuth } from '../contexts/AuthContext';
+import { useFirestore } from '../contexts/FirestoreContext';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 function AccountProfileProgress() {
   const { currentUser } = useAuth();
+  const { userData } = useFirestore();
 
-  const userEmailVerified = currentUser.emailVerified;
+  const [userPhone, setUserPhone] = useState(null);
+  const [userEmailVerified, setUserEmailVerified] = useState(currentUser.emailVerified);
+
   const userCreatedAt = currentUser.metadata.creationTime;
-  const userPhone = currentUser.phoneNumber;
+  
+  // Watch user phone value from Firestore
+  useEffect(() => {
+    if (userData) {
+      setUserPhone(userData.phone);
+    }
+  }, [userData]);
+
+  // Watch user email verified state from Auth
+  useEffect(() => {
+    setUserEmailVerified(currentUser.emailVerified);
+  }, [currentUser.emailVerified]);
 
   // Calculate percentage of profile completion
   function checkPercentage() {
     let percentage = 33;
-    if (userPhone != null) {
+    if (userPhone) {
       percentage += 33;
     }
-    if (userEmailVerified === true) {
+    if (userEmailVerified) {
       percentage += 33;
+    }
+    if (percentage === 99) {
+      percentage = 100;
     }
     return percentage;
   }
@@ -31,8 +49,14 @@ function AccountProfileProgress() {
   function getTimeDifference(createdAt) {
     const creationDate = new Date(createdAt);
     const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1); // Get yesterday's date
     const diffInMs = today - creationDate;
-
+  
+    if (diffInMs < 1000 * 60 * 60 * 24 && creationDate.getDate() < today.getDate()) {
+      return "yesterday";
+    }
+  
     if (diffInMs < 1000 * 60 * 60 * 24) { // less than 24 hours
       return "today";
     }
@@ -57,6 +81,7 @@ function AccountProfileProgress() {
   
     return `${diffString} ${unitString} ago`;
   }
+  
 
   return (
     <Col className="col ap-progress">
@@ -92,7 +117,7 @@ function AccountProfileProgress() {
                   userPhone != null ?
                   <>
                     <div>Phone Added</div>
-                    <div></div>
+                    <div>Recently</div>
                   </>
                   :
                   <div>Phone Not Added</div>
@@ -108,7 +133,7 @@ function AccountProfileProgress() {
                   userEmailVerified === true ?
                   <>
                     <div>Email Verified</div>
-                    <div></div>
+                    <div>Recently</div>
                   </>
                   :
                   <div>Email Not Verified</div>
