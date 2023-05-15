@@ -69,7 +69,7 @@ function AccountProfilePasswordForm() {
     }
 
   return (
-    <Col className="col">
+    <Col className="col ap-password-form">
       <Card className="card-account">
         <Card.Body>
           <Card.Title>Password</Card.Title>
