@@ -59,7 +59,7 @@ function AccountProfileProgress() {
   }
 
   return (
-    <Col className="col">
+    <Col className="col ap-progress">
       <Card className="card-account">
         <Card.Body>
           <Card.Title>Account Setup</Card.Title>
