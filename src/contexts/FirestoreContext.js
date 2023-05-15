@@ -67,12 +67,23 @@ export default function FirestoreProvider({ children }) {
         }
       )
     }, { merge: true });
-  }
+  };
+
+  // Get user phone from Firestore
+  const getUserPhone = async (userId) => {
+    const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+    if (userDoc.exists()) {
+      return userDoc.data().phone;
+    }
+    return null;
+  };
 
   const value = {
     addMaintenanceRequest,
     getMaintenanceRequests,
-    addContactUsMessage
+    addContactUsMessage,
+    getUserPhone
   };
 
   return (
