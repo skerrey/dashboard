@@ -5,16 +5,7 @@ import { Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 
 function AccountProfilePasswordForm() {
-  const { 
-    userId,
-    currentUser, 
-    updateUserPassword, 
-    updatePhone,
-    updateUserEmail, 
-    updateInfo, 
-    verifyEmail,
-    verifyPassword,
-  } = useAuth();
+  const { updateUserPassword, verifyPassword } = useAuth();
 
   const oldPasswordRef = useRef();
   const newPasswordRef = useRef();
@@ -25,48 +16,48 @@ function AccountProfilePasswordForm() {
 
   const [loading, setLoading] = useState(false);
 
-    // Update user password
-    async function handleSubmitUserPassword(e) { 
-      e.preventDefault();
-  
-      const oldPassword = oldPasswordRef.current.value;
-      const newPassword = newPasswordRef.current.value;
-      const confirmNewPassword = confirmNewPasswordRef.current.value;
-  
-      // check if current password is correct from firebase
-      const isPasswordCorrect = await verifyPassword(oldPassword);
-      if (!isPasswordCorrect) { 
-        return setErrorPassword('Current password is incorrect')
-      }
-  
-      if (oldPassword && !newPassword) { // check if new password is empty
-        return setErrorPassword('New password cannot be empty')
-      }
-  
-      if (newPassword !== confirmNewPassword) { // check if passwords match
-        return setErrorPassword('Passwords do not match')
-      }
-  
-      try { // try to update user password
-        setErrorPassword('');
-        setLoading(true);
-        await updateUserPassword(newPassword);
-        setSuccessPassword('Password successfully updated');
-  
-        // Clear input fields
-        oldPasswordRef.current.value = '';
-        newPasswordRef.current.value = '';
-        confirmNewPasswordRef.current.value = '';
-  
-        setTimeout(() => {
-          setSuccessPassword('');
-        }, 3000); 
-      } catch (e) {
-        setErrorPassword('Failed to update account');
-        console.log(e);
-      }
-      setLoading(false);
+  // Update user password
+  async function handleSubmitUserPassword(e) { 
+    e.preventDefault();
+
+    const oldPassword = oldPasswordRef.current.value;
+    const newPassword = newPasswordRef.current.value;
+    const confirmNewPassword = confirmNewPasswordRef.current.value;
+
+    // check if current password is correct from firebase
+    const isPasswordCorrect = await verifyPassword(oldPassword);
+    if (!isPasswordCorrect) { 
+      return setErrorPassword('Current password is incorrect')
     }
+
+    if (oldPassword && !newPassword) { // check if new password is empty
+      return setErrorPassword('New password cannot be empty')
+    }
+
+    if (newPassword !== confirmNewPassword) { // check if passwords match
+      return setErrorPassword('Passwords do not match')
+    }
+
+    try { // try to update user password
+      setErrorPassword('');
+      setLoading(true);
+      await updateUserPassword(newPassword);
+      setSuccessPassword('Password successfully updated');
+
+      // Clear input fields
+      oldPasswordRef.current.value = '';
+      newPasswordRef.current.value = '';
+      confirmNewPasswordRef.current.value = '';
+
+      setTimeout(() => {
+        setSuccessPassword('');
+      }, 3000); 
+    } catch (e) {
+      setErrorPassword('Failed to update account');
+      console.log(e);
+    }
+    setLoading(false);
+  }
 
   return (
     <Col className="col ap-password-form">
