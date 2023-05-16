@@ -11,13 +11,13 @@ function AccountProfilePasswordForm() {
   const newPasswordRef = useRef();
   const confirmNewPasswordRef = useRef();
 
-  const [errorPassword, setErrorPassword] = useState('');
-  const [successPassword, setSuccessPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const [loading, setLoading] = useState(false);
 
   // Update user password
-  async function handleSubmitUserPassword(e) { 
+  async function handleSubmit(e) { 
     e.preventDefault();
 
     const oldPassword = oldPasswordRef.current.value;
@@ -27,22 +27,22 @@ function AccountProfilePasswordForm() {
     // check if current password is correct from firebase
     const isPasswordCorrect = await verifyPassword(oldPassword);
     if (!isPasswordCorrect) { 
-      return setErrorPassword('Current password is incorrect')
+      return setError('Current password is incorrect')
     }
 
     if (oldPassword && !newPassword) { // check if new password is empty
-      return setErrorPassword('New password cannot be empty')
+      return setError('New password cannot be empty')
     }
 
     if (newPassword !== confirmNewPassword) { // check if passwords match
-      return setErrorPassword('Passwords do not match')
+      return setError('Passwords do not match')
     }
 
     try { // try to update user password
-      setErrorPassword('');
+      setError('');
       setLoading(true);
       await updateUserPassword(newPassword);
-      setSuccessPassword('Password successfully updated');
+      setSuccess('Password successfully updated');
 
       // Clear input fields
       oldPasswordRef.current.value = '';
@@ -50,23 +50,23 @@ function AccountProfilePasswordForm() {
       confirmNewPasswordRef.current.value = '';
 
       setTimeout(() => {
-        setSuccessPassword('');
+        setSuccess('');
       }, 3000); 
     } catch (e) {
-      setErrorPassword('Failed to update account');
+      setError('Failed to update account');
       console.log(e);
     }
     setLoading(false);
   }
 
   return (
-    <Col className="col ap-password-form">
-      <Card className="card-account">
+    <Col className="col">
+      <Card className="card-account ap-password-form">
         <Card.Body>
           <Card.Title>Password</Card.Title>
-          <Form onSubmit={handleSubmitUserPassword}>
-            {errorPassword && <Alert variant="danger">{errorPassword}</Alert>}
-            {successPassword && <Alert variant="success">{successPassword}</Alert>}
+          <Form onSubmit={handleSubmit}>
+            {error && <Alert variant="danger">{error}</Alert>}
+            {success && <Alert variant="success">{success}</Alert>}
             <Form.Group id="old-password" className="my-2">
               <Form.Label>Current Password</Form.Label>
               <Form.Control aria-labelledby="old-password" type="password"  autoComplete="current-password" ref={oldPasswordRef} />
@@ -84,7 +84,7 @@ function AccountProfilePasswordForm() {
             </Button>
           </Form>
         </Card.Body>
-        </Card>
+      </Card>
     </Col>
   )
 }
