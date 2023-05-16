@@ -82,6 +82,29 @@ export default function FirestoreProvider({ children }) {
     return null;
   };
 
+  const updateAddress = async (userId, address, address2, city, state, zip) => {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      address: {
+        address: address,
+        address2: address2,
+        city: city,
+        state: state,
+        zip: zip
+      }
+    }, { merge: true });
+  };
+
+  const getAddress = async (userId) => {
+    const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+    if (userDoc.exists()) {
+      return userDoc.data().address;
+    }
+    return null;
+  };
+  
+
   useEffect(() => {
     if (currentUser) {
       // Set up Firestore snapshot listener
@@ -102,7 +125,9 @@ export default function FirestoreProvider({ children }) {
     addMaintenanceRequest,
     getMaintenanceRequests,
     addContactUsMessage,
-    getUserPhone
+    getUserPhone,
+    updateAddress,
+    getAddress
   };
 
   return (
