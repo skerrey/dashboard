@@ -25,9 +25,12 @@ function Sidebar({ isSidebarOpen, toggleSidebar, isMobile }) {
         <div className="sidebar-title">
           <div className="welcome-message">Hello</div>
           <div className="username">
-            {currentUser ? currentUser.displayName : ''}
-            <br />
-            {currentUser ? currentUser.email : ''}
+            <div className="text-break">
+              {currentUser ? currentUser.displayName : ''}
+            </div>
+            <div className="text-break">
+              {currentUser ? currentUser.email : ''}
+            </div>
           </div>
         </div>
 
