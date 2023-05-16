@@ -83,7 +83,7 @@ function AccountProfileUserDetails() {
         setError('Invalid email format');
       } else if (e.code === 'auth/requires-recent-login') {
         setError('Please verify your password to update your email');
-        setVerifyPasswordIfInactive(true); // Show verify password input if inactive
+        setVerifyPasswordIfInactive(true); // Show verify password button if inactive
       } else {
         setError('Failed to update account');
       }
@@ -121,19 +121,21 @@ function AccountProfileUserDetails() {
     <Col className="col">
       <Card className="card-account ap-user-details">
         <Card.Body>
-          <Card.Title>User Details</Card.Title>
+          <Card.Title>Contact Information</Card.Title>
           <div>
             {error && <Alert variant="danger">{error}</Alert>}
             {success && <Alert variant="success">{success}</Alert>}
             <Form onSubmit={handleSubmit}>
-              <Form.Group id="first-name" >
-                <Form.Label>First Name</Form.Label>
-                <Form.Control aria-labelledby="first-name" type="text" autoComplete="given-name" ref={firstNameRef} required defaultValue={nameArr[0]} />
-              </Form.Group>
-              <Form.Group id="last-name" className="my-2">
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control aria-labelledby="last-name" type="text" autoComplete="family-name" ref={lastNameRef} required defaultValue={nameArr[1]} />
-              </Form.Group>
+              <div className="d-flex">
+                <Form.Group id="first-name" className="me-2">
+                  <Form.Label>First Name</Form.Label>
+                  <Form.Control aria-labelledby="first-name" type="text" autoComplete="given-name" ref={firstNameRef} required defaultValue={nameArr[0]} />
+                </Form.Group>
+                <Form.Group id="last-name" className="ms-2">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control aria-labelledby="last-name" type="text" autoComplete="family-name" ref={lastNameRef} required defaultValue={nameArr[1]} />
+                </Form.Group>
+              </div>
               <Form.Group id="phone" className="my-2">
                 <Form.Label>Phone</Form.Label>
                 <br/>
@@ -185,7 +187,7 @@ function AccountProfileUserDetails() {
                 </Form.Group>
               }
               <Button disabled={loading} className="mt-3" type="submit">
-                Update User Details
+                Update
               </Button>
             </Form>
           </div>
