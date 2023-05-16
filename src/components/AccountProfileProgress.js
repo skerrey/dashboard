@@ -84,8 +84,8 @@ function AccountProfileProgress() {
   
 
   return (
-    <Col className="col ap-progress">
-      <Card className="card-account">
+    <Col className="col">
+      <Card className="card-account ap-progress">
         <Card.Body>
           <Card.Title>Account Setup</Card.Title>
           <Row>
