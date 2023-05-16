@@ -28,8 +28,8 @@ function AccountProfileUserDetails() {
   const phoneRef = useRef();
   const verifyPasswordRef = useRef();
   
-  const [errorUserDetails, setErrorUserDetails] = useState('');
-  const [successUserDetails, setSuccessUserDetails] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [verifyPasswordIfInactive, setVerifyPasswordIfInactive] = useState(false);
   const [emailVerifyClicked, setEmailVerifyClicked] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -49,19 +49,19 @@ function AccountProfileUserDetails() {
   };
 
   // Update user details
-  async function handleSubmitUserDetails(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     // Join current user's first and last name
     const name = firstNameRef.current.value + " " + lastNameRef.current.value;
 
     if (phoneRef.current.value.length !== 14) {
-      setErrorUserDetails('Invalid phone number');
+      setError('Invalid phone number');
       return;
     }
 
     try {
-      setErrorUserDetails('');
+      setError('');
       setLoading(true);
     
       if(verifyPasswordIfInactive === true) {
@@ -72,20 +72,20 @@ function AccountProfileUserDetails() {
       await updateUserEmail(emailRef.current.value);
 
       setVerifyPasswordIfInactive(false);
-      setSuccessUserDetails('Account successfully updated');
+      setSuccess('Account successfully updated');
       setTimeout(() => { 
-        setSuccessUserDetails('');
+        setSuccess('');
       }, 3000);
     } catch (e) {
       if (e.code === 'auth/email-already-in-use') {
-        setErrorUserDetails('An account with that email already exists');
+        setError('An account with that email already exists');
       } else if (e.code === 'auth/invalid-email') {
-        setErrorUserDetails('Invalid email format');
+        setError('Invalid email format');
       } else if (e.code === 'auth/requires-recent-login') {
-        setErrorUserDetails('Please verify your password to update your email');
+        setError('Please verify your password to update your email');
         setVerifyPasswordIfInactive(true); // Show verify password input if inactive
       } else {
-        setErrorUserDetails('Failed to update account');
+        setError('Failed to update account');
       }
       console.log(e);
     }
@@ -118,14 +118,14 @@ function AccountProfileUserDetails() {
   }, [getUserPhone, userId]);
 
   return (
-    <Col className="col ap-user-details">
-      <Card className="card-account">
+    <Col className="col">
+      <Card className="card-account ap-user-details">
         <Card.Body>
           <Card.Title>User Details</Card.Title>
           <div>
-            {errorUserDetails && <Alert variant="danger">{errorUserDetails}</Alert>}
-            {successUserDetails && <Alert variant="success">{successUserDetails}</Alert>}
-            <Form onSubmit={handleSubmitUserDetails}>
+            {error && <Alert variant="danger">{error}</Alert>}
+            {success && <Alert variant="success">{success}</Alert>}
+            <Form onSubmit={handleSubmit}>
               <Form.Group id="first-name" >
                 <Form.Label>First Name</Form.Label>
                 <Form.Control aria-labelledby="first-name" type="text" autoComplete="given-name" ref={firstNameRef} required defaultValue={nameArr[0]} />
