@@ -11,10 +11,11 @@ import {
   sendPasswordResetEmail,
   updateEmail,
   updatePassword, 
-  sendEmailVerification
+  sendEmailVerification,
+  deleteUser,
 } from 'firebase/auth';
 
-import { doc, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, setDoc } from "firebase/firestore";
 
 const AuthContext = React.createContext();
 
@@ -140,6 +141,21 @@ export default function AuthProvider({ children }) {
     return updatePassword(auth.currentUser, newPassword)
   };
 
+// Delete user
+function deleteAccount() {
+  const user = auth.currentUser;
+  const userRef = doc(db, "users", user.uid);
+
+  return deleteDoc(userRef) // Delete user from database
+    .then(() => {
+      return deleteUser(user); // Delete user from Auth
+    })
+    .catch((error) => {
+      console.error("Error deleting user: ", error);
+    });
+}
+
+
   useEffect(() => { // set user on mount
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
@@ -162,7 +178,8 @@ export default function AuthProvider({ children }) {
     verifyEmail,
     updateUserPassword,
     verifyPassword,
-    updateInfo
+    updateInfo,
+    deleteAccount
   };
 
   return (
