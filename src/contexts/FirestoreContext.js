@@ -82,6 +82,7 @@ export default function FirestoreProvider({ children }) {
     return null;
   };
 
+  // Update user address in Firestore
   const updateAddress = async (userId, address, address2, city, state, zip) => {
     const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
@@ -95,6 +96,7 @@ export default function FirestoreProvider({ children }) {
     }, { merge: true });
   };
 
+  // Get user address from Firestore
   const getAddress = async (userId) => {
     const userRef = doc(db, "users", userId);
     const userDoc = await getDoc(userRef);
@@ -103,7 +105,6 @@ export default function FirestoreProvider({ children }) {
     }
     return null;
   };
-  
 
   useEffect(() => {
     if (currentUser) {
