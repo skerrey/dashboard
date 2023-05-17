@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 
-function AccountProfilePasswordForm() {
+function SettingsPasswordForm() {
   const { updateUserPassword, verifyPassword } = useAuth();
 
   const oldPasswordRef = useRef();
@@ -61,7 +61,7 @@ function AccountProfilePasswordForm() {
 
   return (
     <Col className="col">
-      <Card className="card-account ap-password-form">
+      <Card className="card-settings">
         <Card.Body>
           <Card.Title>Password</Card.Title>
           <Form onSubmit={handleSubmit}>
@@ -89,4 +89,4 @@ function AccountProfilePasswordForm() {
   )
 }
 
-export default AccountProfilePasswordForm
+export default SettingsPasswordForm
