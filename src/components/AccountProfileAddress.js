@@ -69,7 +69,7 @@ function AccountProfileAddress() {
 
   return (
     <Col className="col">
-      <Card className="card-account ap-user-details">
+      <Card className="card-account ap-address">
         <Card.Body>
           <Card.Title>Address</Card.Title>
           <div>
