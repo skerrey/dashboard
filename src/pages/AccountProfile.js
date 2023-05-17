@@ -7,7 +7,7 @@ import "./AccountProfile.scss";
 
 import AccountProfileProgress from '../components/AccountProfileProgress';
 import AccountProfileUserDetails from '../components/AccountProfileUserDetails';
-import AccountProfilePasswordForm from '../components/AccountProfilePasswordForm';
+import AccountProfileAddress from '../components/AccountProfileAddress.js';
 
 function AccountProfile() {
   return (
@@ -20,7 +20,7 @@ function AccountProfile() {
       </Row>
       <Row xs={1} sm={1} md={1} lg={2}>
         <AccountProfileUserDetails />
-        <AccountProfilePasswordForm />
+        <AccountProfileAddress />
       </Row>
     </div>
   )
