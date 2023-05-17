@@ -78,16 +78,16 @@ function AccountProfileAddress() {
             <Form onSubmit={handleSubmit}>
               <Form.Group id="address-1" >
                 <Form.Label>Address 1</Form.Label>
-                <Form.Control aria-labelledby="address-1" type="text" autoComplete="address" ref={addressRef} required defaultValue={address.address} />
+                <Form.Control aria-labelledby="address-1" type="text" autoComplete="address" ref={addressRef} required defaultValue={address ? address.address : ''} />
               </Form.Group>
               <Form.Group id="address-2" className="my-2">
                 <Form.Label>Address 2</Form.Label>
-                <Form.Control aria-labelledby="address-2" type="text" autoComplete="addressLine2" ref={address2Ref} required defaultValue={address.address2} />
+                <Form.Control aria-labelledby="address-2" type="text" autoComplete="addressLine2" ref={address2Ref} required defaultValue={address ? address.address2 : ''} />
               </Form.Group>
               <div className="d-flex my-2">
                 <Form.Group id="city" className="me-2">
                   <Form.Label>City</Form.Label>
-                  <Form.Control aria-labelledby="city" type="text" autoComplete="home city"  ref={cityRef} required defaultValue={address.city}/>
+                  <Form.Control aria-labelledby="city" type="text" autoComplete="home city"  ref={cityRef} required defaultValue={address ? address.city : ''}/>
                 </Form.Group>
                 <Form.Group id="state" className="ms-2 me-2">
                   <Form.Label>State</Form.Label>
@@ -95,7 +95,7 @@ function AccountProfileAddress() {
                     aria-labelledby="state-select"
                     autoComplete="state"
                     ref={stateRef}
-                    value={address.state || selectedState}
+                    value={address ? address.state : '' || selectedState}
                     onChange={(e) => setSelectedState(e.target.value)}
                     required
                   >
@@ -109,7 +109,7 @@ function AccountProfileAddress() {
                 </Form.Group>
                 <Form.Group id="zip-code" className="ms-2">
                   <Form.Label>Zip Code</Form.Label>
-                  <Form.Control aria-labelledby="zip-code" type="text" autoComplete="postal-code" ref={zipRef} required                      defaultValue={address.zip} maxLength="5" />
+                  <Form.Control aria-labelledby="zip-code" type="text" autoComplete="postal-code" ref={zipRef} required defaultValue={address ? address.zip : ''} maxLength="5" />
                 </Form.Group>
               </div>
               <Button disabled={loading} className="mt-3" type="submit">
