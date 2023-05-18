@@ -27,6 +27,7 @@ export default function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [userId, setUserId] = useState();
   const [loading, setLoading] = useState(true);
+  const [isUserEmailVerified, setUserIsEmailVerified] = useState(false);
 
    // Signup
   function signup(firstName, lastName, email, password) {
@@ -90,6 +91,7 @@ export default function AuthProvider({ children }) {
   };
 
 
+  // Update phone
   async function updatePhone(phone) {
     try {
       const ref = doc(db, "users", auth.currentUser.uid)
@@ -117,7 +119,24 @@ export default function AuthProvider({ children }) {
 
   // Verify email
   function verifyEmail() {
-    return sendEmailVerification(auth.currentUser);
+    return sendEmailVerification(auth.currentUser)
+
+    // Update email verification in database
+    .then(async () => {
+      try {
+        const ref = doc(db, "users", auth.currentUser.uid)
+        await setDoc(ref, { emailVerification: "sent" }, { merge: true })
+      } catch (e) {
+        console.error("Error updating document: ", e);
+      }
+    })
+  }
+
+  // Reload user (for email verification)
+  async function reloadUser() {
+    await auth.currentUser.reload();
+    await auth.currentUser.getIdToken(true);
+    setUserIsEmailVerified(auth.currentUser.emailVerified);
   }
 
   // Verify password
@@ -176,6 +195,7 @@ function deleteAccount() {
     updatePhone,
     updateUserEmail,
     verifyEmail,
+    reloadUser,
     updateUserPassword,
     verifyPassword,
     updateInfo,
