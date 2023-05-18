@@ -106,6 +106,14 @@ export default function FirestoreProvider({ children }) {
     return null;
   };
 
+  // Update email verification status
+  const updateEmailVerificationStatus = async (userId) => {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      emailVerification: "verified"
+    }, { merge: true });
+  };
+
   useEffect(() => {
     if (currentUser) {
       // Set up Firestore snapshot listener
@@ -128,7 +136,8 @@ export default function FirestoreProvider({ children }) {
     addContactUsMessage,
     getUserPhone,
     updateAddress,
-    getAddress
+    getAddress,
+    updateEmailVerificationStatus
   };
 
   return (
