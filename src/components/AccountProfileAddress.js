@@ -42,8 +42,6 @@ function AccountProfileAddress() {
       });
   }, [getAddress, userId]);
 
-  console.log("address:", address);
-
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -61,9 +59,10 @@ function AccountProfileAddress() {
       setSuccess('Address successfully updated');
       setTimeout(() => {
         setSuccess('');
-      }, 3000);
+      }, 4000);
     } catch (e) {
       setError('Failed to add address');
+      setTimeout(() => { setError(''); }, 4000);
     }
   }
 
