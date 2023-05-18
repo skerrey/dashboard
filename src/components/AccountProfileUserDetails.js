@@ -33,7 +33,6 @@ function AccountProfileUserDetails() {
   const [verifyPasswordIfInactive, setVerifyPasswordIfInactive] = useState(false);
   const [emailVerifyClicked, setEmailVerifyClicked] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [userEmailVerified, setUserEmailVerified] = useState(currentUser.emailVerified);
   const [userPhone, setUserPhone] = useState('');
 
   // Split up current user's name into first and last name
@@ -55,8 +54,9 @@ function AccountProfileUserDetails() {
     // Join current user's first and last name
     const name = firstNameRef.current.value + " " + lastNameRef.current.value;
 
-    if (phoneRef.current.value.length !== 14) {
+    if (userPhone && phoneRef.current.value.length !== 14) {
       setError('Invalid phone number');
+      setTimeout(() => { setError(''); }, 4000);
       return;
     }
 
@@ -75,14 +75,17 @@ function AccountProfileUserDetails() {
       setSuccess('Account successfully updated');
       setTimeout(() => { 
         setSuccess('');
-      }, 3000);
+      }, 4000);
     } catch (e) {
       if (e.code === 'auth/email-already-in-use') {
         setError('An account with that email already exists');
+        setTimeout(() => { setError(''); }, 4000);
       } else if (e.code === 'auth/invalid-email') {
         setError('Invalid email format');
+        setTimeout(() => { setError(''); }, 4000);
       } else if (e.code === 'auth/requires-recent-login') {
         setError('Please verify your password to update your email');
+        setTimeout(() => { setError(''); }, 4000);
         setVerifyPasswordIfInactive(true); // Show verify password button if inactive
       } else {
         setError('Failed to update account');
@@ -93,18 +96,25 @@ function AccountProfileUserDetails() {
   }
 
   // Send email verification
-  function handleEmailVerify() {
-    verifyEmail();
-    setEmailVerifyClicked(true);
-    setTimeout(() => {
-      setEmailVerifyClicked(false);
-    }, 4000);
+  async function handleEmailVerify() {
+    try {
+      setError('');
+      await verifyEmail();
+      setEmailVerifyClicked(true);
+      setTimeout(() => {
+        setEmailVerifyClicked(false);
+      }, 4000);
+    } catch (e) {
+      if (e.code === 'auth/too-many-requests') {
+        setError('Too many requests. Please try again later.');
+        setTimeout(() => {
+          setError('');
+        }, 4000);
+      } else {
+        console.log(e);
+      }
+    }
   }
-
-  // Watch user email verified state
-  useEffect(() => {
-    setUserEmailVerified(currentUser.emailVerified);
-  }, [currentUser.emailVerified]);
 
   // Get user phone from Firestore
   useEffect(() => {
@@ -153,8 +163,8 @@ function AccountProfileUserDetails() {
                 />
               </Form.Group>
 
-              {/* Conditional form group for users w/ and w/out email verified */}
-              {userEmailVerified === true 
+              {/* Show button if email is not verified */}
+              {currentUser.emailVerified
                 ? (
                   <Form.Group id="email" className="my-2">
                     <Form.Label>Email</Form.Label>
