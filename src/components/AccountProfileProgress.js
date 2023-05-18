@@ -1,7 +1,7 @@
 // Description: Progress bar for account profile
 
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
+import { Row, Col, Card, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAuth } from '../contexts/AuthContext';
@@ -10,11 +10,11 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 function AccountProfileProgress() {
-  const { currentUser } = useAuth();
-  const { userData } = useFirestore();
+  const { userId, currentUser, reloadUser } = useAuth();
+  const { userData, updateEmailVerificationStatus } = useFirestore();
 
   const [userPhone, setUserPhone] = useState(null);
-  const [userEmailVerified, setUserEmailVerified] = useState(currentUser.emailVerified);
+  // const [userEmailVerified, setUserEmailVerified] = useState(currentUser.emailVerified);
 
   const userCreatedAt = currentUser.metadata.creationTime;
   
@@ -25,18 +25,13 @@ function AccountProfileProgress() {
     }
   }, [userData]);
 
-  // Watch user email verified state from Auth
-  useEffect(() => {
-    setUserEmailVerified(currentUser.emailVerified);
-  }, [currentUser.emailVerified]);
-
   // Calculate percentage of profile completion
   function checkPercentage() {
     let percentage = 33;
     if (userPhone) {
       percentage += 33;
     }
-    if (userEmailVerified) {
+    if (currentUser.emailVerified) {
       percentage += 33;
     }
     if (percentage === 99) {
@@ -80,6 +75,20 @@ function AccountProfileProgress() {
     const unitString = `${unit}${diff === 1 ? '' : 's'}`;
   
     return `${diffString} ${unitString} ago`;
+  }
+
+  async function checkEmailVerification() {
+    try {
+      console.log("user reloaded");
+      await reloadUser();
+      await currentUser;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (currentUser.emailVerified === true) {
+        updateEmailVerificationStatus(userId);
+      }
+    }
   }
   
 
@@ -125,15 +134,30 @@ function AccountProfileProgress() {
               </div>
             </Col>
             <Col className="icon-col">
-              <div className={userEmailVerified === true ? "icon-circle-activated" : "icon-circle-not-activated"}>
+              <div className={currentUser.emailVerified ? "icon-circle-activated" : "icon-circle-not-activated"}>
                 <FontAwesomeIcon icon="fa-solid fa-user-plus" />
               </div>
               <div className="text-muted text-start ps-2">
-                {
+                {/* {
                   userEmailVerified === true ?
                   <>
                     <div>Email Verified</div>
                     <div>Recently</div>
+                  </>
+                  :
+                  <div>Email Not Verified</div>
+                } */}
+                {
+                  currentUser.emailVerified ?
+                  <>
+                    <div>Email Verified</div>
+                    <div>Recently</div>
+                  </>
+                  :
+                  !currentUser.emailVerified ?
+                  <>
+                    <div>Email Not Verified</div>
+                    <Button onClick={checkEmailVerification}>Check Verification Status</Button>
                   </>
                   :
                   <div>Email Not Verified</div>
