@@ -27,7 +27,8 @@ export default function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [userId, setUserId] = useState();
   const [loading, setLoading] = useState(true);
-  const [, setUserIsEmailVerified] = useState(false);
+  const [, setIsUserEmailVerified] = useState(false);
+  const [, setDisplayName] = useState();
 
    // Signup
   function signup(firstName, lastName, email, password) {
@@ -136,7 +137,14 @@ export default function AuthProvider({ children }) {
   async function reloadUserEmail() {
     await auth.currentUser.reload();
     await auth.currentUser.getIdToken(true);
-    setUserIsEmailVerified(auth.currentUser.emailVerified);
+    setIsUserEmailVerified(auth.currentUser.emailVerified);
+  }
+
+  // Reload user 
+  async function reloadUserDisplayName() {
+    await auth.currentUser.reload();
+    await auth.currentUser.getIdToken(true);
+    setDisplayName(auth.currentUser.displayName);
   }
 
   // Verify password
@@ -196,6 +204,7 @@ function deleteAccount() {
     updateUserEmail,
     verifyEmail,
     reloadUserEmail,
+    reloadUserDisplayName,
     updateUserPassword,
     verifyPassword,
     updateInfo,
