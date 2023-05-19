@@ -80,8 +80,10 @@ function AccountProfileAddress() {
                 <Form.Control aria-labelledby="address-1" type="text" autoComplete="address" ref={addressRef} required defaultValue={address ? address.address : ''} />
               </Form.Group>
               <Form.Group id="address-2" className="my-2">
-                <Form.Label>Address 2</Form.Label>
-                <Form.Control aria-labelledby="address-2" type="text" autoComplete="addressLine2" ref={address2Ref} required defaultValue={address ? address.address2 : ''} />
+                <Form.Label>
+                  Address 2 <span className="text-muted">(optional)</span>
+                </Form.Label>
+                <Form.Control aria-labelledby="address-2" type="text" autoComplete="addressLine2" ref={address2Ref} defaultValue={address ? address.address2 : ''} />
               </Form.Group>
               <div className="d-flex my-2">
                 <Form.Group id="city" className="me-2">
