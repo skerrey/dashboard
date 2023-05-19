@@ -1,7 +1,7 @@
 // Description: ContactUs page
 
 import React, { useState } from 'react';
-import { Row, Col, Card, Form, Button, InputGroup } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useFirestore } from "../contexts/FirestoreContext";
 import { v4 as uuidv4 } from 'uuid';
