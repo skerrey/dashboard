@@ -9,6 +9,7 @@ import './Sidebar.scss';
 function Sidebar({ isSidebarOpen, toggleSidebar, isMobile }) {
   const { currentUser } = useAuth();
 
+  // Toggles sidebar on mobile when a link is clicked
   const handleClose = () => {
     if (isSidebarOpen && isMobile) {
       toggleSidebar();
