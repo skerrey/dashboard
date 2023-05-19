@@ -23,6 +23,7 @@ function ContactUs() {
       addContactUsMessage(userId, messageId, subject, message)
       setSuccessMessage('Your message has been sent!');
       setMessage('');
+      setSubject('');
       console.log("Message sent");
       setTimeout(() => {
         setSuccessMessage('');
