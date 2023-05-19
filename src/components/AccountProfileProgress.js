@@ -207,7 +207,9 @@ function AccountProfileProgress() {
                       Email Not Verified 
                       &nbsp; {spinner && <Spinner animation="border" variant="primary" size="sm" />}
                     </div>
-                    <Button variant="link" className="p-0" onClick={checkEmailVerification}>Check Verification Status</Button>
+                    <Button variant="link" className="p-0" onClick={checkEmailVerification}>
+                      Check Verification Status
+                    </Button>
                   </>
                   :
                   <div>Email Not Verified</div>
