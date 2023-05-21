@@ -19,6 +19,8 @@ import {
 
 } from "@fortawesome/free-solid-svg-icons";
 
+import { faStripe } from "@fortawesome/free-brands-svg-icons";
+
 library.add(
   faRightFromBracket,
   faHouse,
@@ -34,4 +36,5 @@ library.add(
   faTrash,
   faUserPlus,
   faCreditCard,
+  faStripe
 );
