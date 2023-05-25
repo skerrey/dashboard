@@ -31,10 +31,9 @@ function CardSetupForm() {
     if (error) {
       console.error(error);
     } else {
-      setupPaymentMethod(paymentMethod.id);
-    }
+      await setupPaymentMethod(paymentMethod.id);
+    } 
   };
-
 
   // Adds payment method to customer
   const setupPaymentMethod = async (paymentMethodId) => {
@@ -78,7 +77,6 @@ function CardSetupForm() {
 
   return (
     <Form onSubmit={handleSubmit} className="">
-      <h5>Add New Card</h5>
       <CardElement className="my-3 bg-light p-2" />
       {success && <p className="text-success">Card added successfully</p>}
       {error && <p className="text-danger">Error adding card</p>}
