@@ -19,9 +19,18 @@ import {
 
 } from "@fortawesome/free-solid-svg-icons";
 
-import { faStripe } from "@fortawesome/free-brands-svg-icons";
+import { 
+  faStripe,
+  faCcVisa,
+  faCcMastercard,
+  faCcDiscover,
+  faCcApplePay,
+  faCcAmazonPay,
+  faCcPaypal,
+} from "@fortawesome/free-brands-svg-icons";
 
 library.add(
+  // Solid
   faRightFromBracket,
   faHouse,
   faBars,
@@ -36,5 +45,13 @@ library.add(
   faTrash,
   faUserPlus,
   faCreditCard,
-  faStripe
+
+  // Brands
+  faStripe,
+  faCcVisa,
+  faCcMastercard,
+  faCcDiscover,
+  faCcApplePay,
+  faCcAmazonPay,
+  faCcPaypal,
 );
