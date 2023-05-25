@@ -8,41 +8,9 @@ import { Elements } from "@stripe/react-stripe-js";
 import { useAuth } from '../contexts/AuthContext';
 import { useFirestore } from '../contexts/FirestoreContext';
 import CardPaymentForm from '../components/CardPaymentForm';
-import AddCardForm from '../components/AddCardForm';
+import PaymentMethods from '../components/PaymentMethods';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
-
-function UserCard({ card }) {
-  // Icon card types
-  const getCardIcon = (brand) => {
-    switch (brand.toLowerCase()) {
-      case 'visa':
-        return "fa-brands fa-cc-visa";
-      case 'mastercard':
-        return "fa-brands fa-cc-mastercard";
-      case 'discover':
-        return "fa-brands fa-cc-discover";
-      case 'applepay':
-        return "fa-brands fa-cc-apple-pay";
-      case 'amazonpay':
-        return "fa-brands fa-cc-amazon-pay";
-      case 'paypal':
-        return "fa-brands fa-cc-paypal";
-      default:
-        return "fa-solid fa-credit-card";  // default icon for unknown types
-    }
-  };
-
-  return (
-    <div className="d-inline-flex justify-content-between align-items-center bg-light rounded w-100 mt-1">
-      <FontAwesomeIcon icon={getCardIcon(card.brand)} size="2xl" />
-      <span>ending in {card.last4}</span>
-      <Button variant="light">
-        <FontAwesomeIcon icon="fa-solid fa-trash" size="xs" className="text-danger" />
-      </Button>
-    </div>
-  );
-}
 
 function Payments() {
   const { currentUser } = useAuth();
@@ -62,15 +30,6 @@ function Payments() {
       setCards(userData.payments.cards);
     }
   }, [userData]);
-  
-  // Render the user's cards
-  const renderUserCard = (card) => {
-    return (
-      <div key={card._id}>
-        <UserCard card={card} />
-      </div>
-    )
-  };
 
   // Handler for selecting payment option
   const handlePaymentOptionChange = (e) => {
@@ -83,34 +42,10 @@ function Payments() {
     } 
   };
 
-  // Handle amount change
+  // Handle amount change because Stripe uses cents
   const handleAmountChange = (e) => {
     const amountInCents = e.target.value * 100;
     setAmount(amountInCents);
-  };
-
-  // Create a Stripe customer
-  const createCustomer = async () => {
-    try {
-      setLoading(true);
-
-      const response = await fetch("https://us-central1-dashboard-c48b3.cloudfunctions.net/createStripeCustomer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user: currentUser }),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        console.log('Stripe customer created successfully');
-      } else {
-        console.log('Error creating Stripe customer');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   // Create a PaymentIntent with the specified amount.
@@ -138,6 +73,29 @@ function Payments() {
     clientSecret,
     appearance,
   };
+
+  const handlePayment = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const stripe = await stripePromise;
+    const result = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: selectedCard,
+      customer: currentUser.id,
+    });
+
+    if (result.error) {
+      // Show error to your customer (e.g., insufficient funds)
+      console.log(result.error.message);
+    } else {
+      // The payment has been processed!
+      if (result.paymentIntent.status === 'succeeded') {
+        console.log('Success!');
+      }
+    }
+    setLoading(false);
+  };
+
 
   return (
     <div>
@@ -182,7 +140,7 @@ function Payments() {
                     <h3>Checkout</h3>
                     <Row>
                       <Col>
-                        <div>Total</div>
+                        <div>Amount</div>
                         <InputGroup>
                           <InputGroup.Text id="payment">$</InputGroup.Text>
                           <Form.Control
@@ -217,7 +175,7 @@ function Payments() {
                     )}
                     
                     {selectedCard && (
-                      <Button variant="success" className="mt-3">
+                      <Button variant="success" className="mt-3" onClick={handlePayment}>
                         Pay
                       </Button>
                     )}
@@ -238,38 +196,7 @@ function Payments() {
         </Col>
       </Row>
       <Row xs={1} sm={1} md={1} lg={2}>
-        <Col className="col">
-          <Card className="card-payments">
-            <Card.Body>
-              <Card.Title>Payment Methods</Card.Title>
-              <hr className="text-muted mt-0 mb-2" />
-              <Row xs={1} sm={2} md={2} lg={2}>
-                <Col>
-                  <h5>Add New Card</h5>
-                  {userData && !userData.stripeCustomerId && (
-                    <div className="d-flex align-items-center">
-                      <Button onClick={createCustomer} className="mt-1">
-                        Add New Card
-                      </Button>
-                      {loading && <Spinner animation="border" variant="primary" className="ms-3"/>}
-                    </div>
-                  )}
-                  {userData && userData.stripeCustomerId && clientSecret && (
-                    <Elements options={options} stripe={stripePromise}>
-                      <AddCardForm />
-                    </Elements>
-                  )}
-                </Col>
-                <Col className="justify-content-end">
-                  <h5>Saved Cards</h5>
-                  <div>
-                  {cards && cards.map(renderUserCard)}
-                  </div>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
+        <PaymentMethods />
       </Row>
     </div>
   )
