@@ -9,11 +9,13 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button, Form, Spinner } from 'react-bootstrap';
 
-export default function CardPaymentForm() {
+export default function CardPaymentForm({ clientSecret }) {
   const stripe = useStripe();
   const elements = useElements();
   const { currentUser } = useAuth();
 
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState(null);
@@ -35,16 +37,20 @@ export default function CardPaymentForm() {
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
       switch (paymentIntent.status) {
         case "succeeded":
-          setMessage("Payment succeeded!");
+          setSuccess("Payment succeeded!");
+          setTimeout(() => setSuccess(null), 3000);
           break;
         case "processing":
-          setMessage("Your payment is processing.");
+          setError("Your payment is processing.");
+          setTimeout(() => setError(null), 3000);
           break;
         case "requires_payment_method":
-          setMessage("Your payment was not successful, please try again.");
+          setError("Your payment was not successful, please try again.");
+          setTimeout(() => setError(null), 3000);
           break;
         default:
-          setMessage("Something went wrong.");
+          setError("Something went wrong.");
+          setTimeout(() => setError(null), 3000);
           break;
       }
     });
@@ -61,44 +67,58 @@ export default function CardPaymentForm() {
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmCardPayment({
-      elements,
-      confirmParams: {
-        // Make sure to change this to payment completion page
-        return_url: "/",
+    const cardElement = elements.getElement(CardElement);
+
+    const { error } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: cardElement,
       },
     });
 
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message);
+    if (error) {
+      if (error.type === "card_error" || error.type === "validation_error") {
+        setError(error.message);
+        setTimeout(() => setError(null), 3000);
+      } else {
+        setError("An unexpected error occurred.");
+        setTimeout(() => setError(null), 3000);
+      }
     } else {
-      setMessage("An unexpected error occurred.");
+      setSuccess("Payment Successful!"); 
+      setTimeout(() => setSuccess(null), 3000);
     }
     setIsLoading(false);
   };
 
-  const userEmail = currentUser ? currentUser.email : "";
-  // const userName = currentUser ? currentUser.displayName : "";
-
-  const paymentElementOptions = {
-    layout: "tabs",
-    defaultValues: {
-      billingDetails: {
-        email: userEmail,
-      }
-    }
+  const cardElementOptions = {
+    style: {
+      base: {
+        color: "#32325d",
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: "antialiased",
+        fontSize: "16px",
+        "::placeholder": {
+          color: "#aab7c4",
+        },
+      },
+      invalid: {
+        color: "#fa755a",
+        iconColor: "#fa755a",
+      },
+    },
   }
 
   return (
     <Form id="payment-form" onSubmit={handleSubmit}>
-      <CardElement className="my-3 bg-light p-2" id="payment-element" options={paymentElementOptions} />
-      <Button variant="danger" disabled={isLoading || !stripe || !elements} id="submit">
+      <CardElement className="my-3 bg-light p-2" id="card" options={cardElementOptions} />
+      <Button variant="danger" disabled={isLoading || !stripe || !elements} type="submit">
         <span id="button-text">
           {isLoading ? <Spinner animation="border" variant="primary" className="ms-3"/> : "Pay"}
         </span>
       </Button>
       {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
+      {success && <div className="text-success">{success}</div>}
+      {error && <div className="text-danger">{error}</div>}
     </Form>
   );
 }
