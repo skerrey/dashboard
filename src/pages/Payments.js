@@ -1,6 +1,6 @@
 // Description: Payments page
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Row, Col, Card, Button, InputGroup, Form, Spinner, Collapse } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { loadStripe } from "@stripe/stripe-js";
@@ -9,7 +9,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { useFirestore } from '../contexts/FirestoreContext';
 import CardPaymentForm from '../components/CardPaymentForm';
 import PaymentMethods from '../components/PaymentMethods';
-import { type } from '@testing-library/user-event/dist/type';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
@@ -23,6 +22,7 @@ function Payments() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [showPayForm, setShowPayForm] = useState(false);
   const [showCardForm, setShowCardForm] = useState(false);
+  const newCardRef = useRef(null);
   const balance = 1000;
 
   // Get the card details
@@ -43,6 +43,14 @@ function Payments() {
     } 
   };
 
+  const disablePayButton = () => {
+    if (amount <= 100) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // Handle amount change because Stripe uses cents
   const handleAmountChange = (e) => {
     const amountInCents = e.target.value * 100;
@@ -50,21 +58,21 @@ function Payments() {
   };
 
   // Create a PaymentIntent with the specified amount.
-  // useEffect(() => {
-  //   fetch("https://us-central1-dashboard-c48b3.cloudfunctions.net/createPaymentIntent", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({ amount: amount, customerId: currentUser.uid }),
-  //   })
-  //   .then((res) => {
-  //     if (!res.ok) {
-  //       return res.text().then(text => {throw new Error(text)});
-  //     }
-  //     return res.json();
-  //   })
-  //   .then((data) => setClientSecret(data.clientSecret))
-  //   .catch((error) => console.error('Error:', error));
-  // }, []);
+  useEffect(() => {
+    fetch("https://us-central1-dashboard-c48b3.cloudfunctions.net/createPaymentIntentWithoutId", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: amount || 100 }),
+    })
+    .then((res) => {
+      if (!res.ok) {
+        return res.text().then(text => {throw new Error(text)});
+      }
+      return res.json();
+    })
+    .then((data) => setClientSecret(data.clientSecret))
+    .catch((error) => console.error('Error:', error));
+  }, [newCardRef, amount]);
 
 
   const appearance = {
@@ -74,68 +82,6 @@ function Payments() {
   const options = {
     clientSecret,
     appearance,
-  };
-
-  console.log(typeof(selectedCard));
-  console.log(selectedCard);
-
-  const getPaymentId = async () => {
-    const response = await fetch(
-      'https://us-central1-dashboard-c48b3.cloudfunctions.net/getPaymentMethod',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ paymentMethodId: selectedCard }),
-      },
-    );
-  
-    if (!response.ok) {
-      const message = await response.text();
-      throw new Error(message);
-    }
-  
-    const { paymentMethod } = await response.json();
-    return paymentMethod;
-  };
-
-  const handlePayment = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    let clientSecret = '';
-    await fetch("https://us-central1-dashboard-c48b3.cloudfunctions.net/createPaymentIntent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: amount, customerId: currentUser.uid }),
-    })
-    .then((res) => {
-      if (!res.ok) {
-        return res.text().then(text => {throw new Error(text)});
-      }
-      return res.json();
-    })
-    .then((data) => clientSecret = data.clientSecret)
-    .catch((error) => console.error('Error on fetch:', error));
-
-    const stripe = await stripePromise;
-    const card = await getPaymentId();
-    const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: card,
-      customer: currentUser.uid,
-    });
-
-    if (result.error) {
-      // Show error to your customer (e.g., insufficient funds)
-      console.log(result.error.message);
-    } else {
-      // The payment has been processed!
-      if (result.paymentIntent.status === 'succeeded') {
-        console.log('Success!');
-      }
-    }
-    setLoading(false);
   };
 
 
@@ -206,19 +152,19 @@ function Payments() {
                           {cards && cards.map((card) => (
                             <option key={card._id} value={card._id}>{`${card.brand.toUpperCase()} ending in ${card.last4}`}</option>
                           ))}
-                          <option value="newCard">---Pay with new card---</option>
+                          <option value="newCard" ref={newCardRef}>---Pay with new card---</option>
                         </Form.Select>
                       </Col>
                     </Row>
 
                     {showCardForm && clientSecret && (
-                      <Elements stripe={stripePromise}>
-                        <CardPaymentForm key={clientSecret} options={options} stripe={stripePromise} />
+                      <Elements key={clientSecret} options={options} stripe={stripePromise}>
+                        <CardPaymentForm clientSecret={clientSecret} />
                       </Elements>
                     )}
                     
                     {selectedCard && (
-                      <Button variant="success" className="mt-3" onClick={handlePayment}>
+                      <Button variant="success" className="mt-3">
                         Pay
                       </Button>
                     )}
