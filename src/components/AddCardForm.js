@@ -78,14 +78,14 @@ function CardSetupForm() {
   return (
     <Form onSubmit={handleSubmit} className="">
       <CardElement className="my-3 bg-light p-2" />
-      {success && <p className="text-success">Card added successfully</p>}
-      {error && <p className="text-danger">Error adding card</p>}
       <div className="d-flex align-items-center">
         <Button type="submit" disabled={!stripe} className="mt-1">
           Add New Card
         </Button>
         {loading && <Spinner animation="border" variant="primary" className="ms-3"/>}
       </div>
+      {success && <div className="text-success">Card added successfully</div>}
+      {error && <div className="text-danger">Error adding card</div>}
     </Form>
   );
 }
