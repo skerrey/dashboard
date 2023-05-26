@@ -9,6 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useFirestore } from '../contexts/FirestoreContext';
 import CardPaymentForm from '../components/CardPaymentForm';
 import PaymentMethods from '../components/PaymentMethods';
+import { type } from '@testing-library/user-event/dist/type';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
@@ -17,7 +18,7 @@ function Payments() {
   const { userData } = useFirestore();
   const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(false);
-  const [amount, setAmount] = useState(100000);
+  const [amount, setAmount] = useState(0);
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [showPayForm, setShowPayForm] = useState(false);
@@ -49,21 +50,22 @@ function Payments() {
   };
 
   // Create a PaymentIntent with the specified amount.
-  useEffect(() => {
-    fetch("https://us-central1-dashboard-c48b3.cloudfunctions.net/createPaymentIntent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: amount }),
-    })
-    .then((res) => {
-      if (!res.ok) {
-        return res.text().then(text => {throw new Error(text)});
-      }
-      return res.json();
-    })
-    .then((data) => setClientSecret(data.clientSecret))
-    .catch((error) => console.error('Error:', error));
-  }, []);
+  // useEffect(() => {
+  //   fetch("https://us-central1-dashboard-c48b3.cloudfunctions.net/createPaymentIntent", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ amount: amount, customerId: currentUser.uid }),
+  //   })
+  //   .then((res) => {
+  //     if (!res.ok) {
+  //       return res.text().then(text => {throw new Error(text)});
+  //     }
+  //     return res.json();
+  //   })
+  //   .then((data) => setClientSecret(data.clientSecret))
+  //   .catch((error) => console.error('Error:', error));
+  // }, []);
+
 
   const appearance = {
     theme: 'stripe',
@@ -74,14 +76,54 @@ function Payments() {
     appearance,
   };
 
+  console.log(typeof(selectedCard));
+  console.log(selectedCard);
+
+  const getPaymentId = async () => {
+    const response = await fetch(
+      'https://us-central1-dashboard-c48b3.cloudfunctions.net/getPaymentMethod',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ paymentMethodId: selectedCard }),
+      },
+    );
+  
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message);
+    }
+  
+    const { paymentMethod } = await response.json();
+    return paymentMethod;
+  };
+
   const handlePayment = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    let clientSecret = '';
+    await fetch("https://us-central1-dashboard-c48b3.cloudfunctions.net/createPaymentIntent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: amount, customerId: currentUser.uid }),
+    })
+    .then((res) => {
+      if (!res.ok) {
+        return res.text().then(text => {throw new Error(text)});
+      }
+      return res.json();
+    })
+    .then((data) => clientSecret = data.clientSecret)
+    .catch((error) => console.error('Error on fetch:', error));
+
     const stripe = await stripePromise;
+    const card = await getPaymentId();
     const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: selectedCard,
-      customer: currentUser.id,
+      payment_method: card,
+      customer: currentUser.uid,
     });
 
     if (result.error) {
@@ -144,9 +186,10 @@ function Payments() {
                         <InputGroup>
                           <InputGroup.Text id="payment">$</InputGroup.Text>
                           <Form.Control
-                            placeholder={amount / 100}
+                            placeholder="0"
                             aria-label="payment-input"
                             aria-describedby="payment"
+                            onChange={handleAmountChange}
                           />
                         </InputGroup>
                       </Col>
