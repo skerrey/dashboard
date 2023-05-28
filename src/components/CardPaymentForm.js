@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useFirestore } from "../contexts/FirestoreContext";
 import {
   CardElement,
   useStripe,
@@ -9,10 +10,11 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button, Form, Spinner } from 'react-bootstrap';
 
-export default function CardPaymentForm({ clientSecret }) {
+export default function CardPaymentForm({ clientSecret, amount }) {
   const stripe = useStripe();
   const elements = useElements();
   const { currentUser } = useAuth();
+  const { saveTransaction, userData } = useFirestore();
 
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -69,23 +71,38 @@ export default function CardPaymentForm({ clientSecret }) {
 
     const cardElement = elements.getElement(CardElement);
 
-    const { error } = await stripe.confirmCardPayment(clientSecret, {
+    const result = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: cardElement,
       },
     });
 
-    if (error) {
+    if (result.error) {
       if (error.type === "card_error" || error.type === "validation_error") {
+        console.log("Payment failed");
         setError(error.message);
         setTimeout(() => setError(""), 3000);
       } else {
+        console.log("Payment failed");
         setError("An unexpected error occurred.");
         setTimeout(() => setError(""), 3000);
       }
     } else {
+      console.log("Payment succeeded");
       setSuccess("Payment Successful!"); 
       setTimeout(() => setSuccess(""), 3000);
+
+      /**
+       * --- Add payment transaction in db ---
+       * updating db on front end because of Stripe 3D Secure authentication 
+       * (confirmCardPayment)
+       */
+      await saveTransaction(
+        userData._id,
+        result.paymentIntent.id,
+        amount,
+        result.paymentIntent.status,
+      );
     }
     setIsLoading(false);
   };
