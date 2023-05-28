@@ -17,12 +17,15 @@ function Payments() {
   const { userData } = useFirestore();
   const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(false);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(0); // requires value to load (only 50¢)
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [showPayForm, setShowPayForm] = useState(false);
   const [showCardForm, setShowCardForm] = useState(false);
   const newCardRef = useRef(null);
+  const noCardSelectedRef = useRef(null);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const balance = 1000;
 
   // Get the card details
@@ -32,19 +35,22 @@ function Payments() {
     }
   }, [userData]);
 
-  // Handler for selecting payment option
+  // Show the payment form
   const handlePaymentOptionChange = (e) => {
     if (e.target.value === 'newCard') {
       setShowCardForm(true);
       setSelectedCard(null);
+    } else if (e.target.value === 'noCardSelected') {
+      setSelectedCard(null);
     } else {
       setShowCardForm(false);
       setSelectedCard(e.target.value);
-    } 
+    }
   };
 
+  // Disable payment button until user puts in at least 50¢
   const disablePayButton = () => {
-    if (amount <= 100) {
+    if (amount <= 50) {
       return true;
     } else {
       return false;
@@ -57,12 +63,16 @@ function Payments() {
     setAmount(amountInCents);
   };
 
-  // Create a PaymentIntent with the specified amount.
+  // Create a PaymentIntent for a new card
   useEffect(() => {
+    if (currentUser) {
     fetch("https://us-central1-dashboard-c48b3.cloudfunctions.net/createPaymentIntentWithoutId", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: amount || 100 }),
+      body: JSON.stringify({ 
+        amount: amount || 50,
+        userId: currentUser.uid,
+      }),
     })
     .then((res) => {
       if (!res.ok) {
@@ -72,9 +82,58 @@ function Payments() {
     })
     .then((data) => setClientSecret(data.clientSecret))
     .catch((error) => console.error('Error:', error));
-  }, [newCardRef, amount]);
+  }
+  }, [amount, currentUser]);
 
 
+  // Create payment for stripe customer with existing card
+  const handlePayment = async () => {
+    try {
+      setLoading(true);
+  
+      const res = await fetch('https://us-central1-dashboard-c48b3.cloudfunctions.net/createPaymentIntent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: amount,
+          customerId: userData.stripeCustomerId,
+          payment_method: selectedCard,
+          userId: currentUser.uid,
+        }),
+      });
+  
+      if (!res.ok) {
+        throw new Error('Error creating payment intent');
+      }
+  
+      const data = await res.json();
+      const clientSecret = data.clientSecret;
+  
+      // Use Stripe.js to confirm the payment with the client secret
+      const stripe = await stripePromise;
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: selectedCard,
+      });
+  
+      if (result.error) {
+        console.error(result.error);
+        setError(result.error);
+        setTimeout(() => setError(null), 3000);
+      } else {
+        // Payment successful
+        console.log('Payment succeeded:', result.paymentIntent);
+        setSuccess("Your payment was successful!");
+        setTimeout(() => setSuccess(null), 3000);
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      // Handle the error
+    } 
+    setLoading(false);
+  };
+  
   const appearance = {
     theme: 'stripe',
   };
@@ -83,7 +142,6 @@ function Payments() {
     clientSecret,
     appearance,
   };
-
 
   return (
     <div>
@@ -148,7 +206,7 @@ function Payments() {
                           aria-describedby="asdf"
                           onChange={handlePaymentOptionChange}
                         >
-                          <option value="notSelected">Select Payment Option</option>
+                          <option value="noCardSelected">Select Payment Option</option>
                           {cards && cards.map((card) => (
                             <option key={card._id} value={card._id}>{`${card.brand.toUpperCase()} ending in ${card.last4}`}</option>
                           ))}
@@ -158,17 +216,27 @@ function Payments() {
                     </Row>
 
                     {showCardForm && clientSecret && (
-                      <Elements key={clientSecret} options={options} stripe={stripePromise}>
+                      <Elements key={clientSecret} options={[options]} stripe={stripePromise}>
                         <CardPaymentForm clientSecret={clientSecret} />
                       </Elements>
                     )}
                     
-                    {selectedCard && (
-                      <Button variant="success" className="mt-3">
-                        Pay
-                      </Button>
-                    )}
-
+                    <div className="d-flex align-items-center">
+                      {selectedCard && 
+                        <Button 
+                          variant="success" 
+                          className="mt-3" 
+                          onClick={handlePayment}
+                          disabled={disablePayButton()}
+                        >
+                            Pay
+                        </Button>
+                      }
+                      {loading && <Spinner animation="border" variant="primary" className="ms-3"/> }
+                    </div>
+                    
+                    {success && <div className="text-success">{success}</div>}
+                    {error && <div className="text-danger">{error}</div>}
                   </div>
                 </Collapse>       
             </Card.Body>
