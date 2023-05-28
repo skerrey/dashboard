@@ -114,7 +114,7 @@ export default function FirestoreProvider({ children }) {
     }, { merge: true });
   };
 
-  // Update payment status in db
+  // Save transaction to the db
   const saveTransaction = async (userId, paymentIntentId, amount, paymentStatus) => {
     const userRef = doc(db, "users", userId);
     await setDoc(userRef, {
