@@ -2,7 +2,7 @@
 
 import React, { useContext, useState, useEffect } from 'react';
 import { db} from '../firebase.config';
-import { doc, updateDoc, arrayUnion, getDoc, onSnapshot } from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
 import FormattedDate from '../utils/FormattedDate';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -114,9 +114,24 @@ export default function FirestoreProvider({ children }) {
     }, { merge: true });
   };
 
+  // Update payment status in db
+  const saveTransaction = async (userId, paymentIntentId, amount, paymentStatus) => {
+    const userRef = doc(db, "users", userId);
+    await setDoc(userRef, {
+      payments: {
+        transactions: arrayUnion({          
+          _id: paymentIntentId,
+          paidOn: formattedDateDay, 
+          amount: amount / 100,
+          status: paymentStatus
+        })
+      }
+    }, { merge: true });
+  };
+
+  // Set up Firestore snapshot listener
   useEffect(() => {
     if (currentUser) {
-      // Set up Firestore snapshot listener
       const userRef = doc(db, "users", currentUser.uid);
       const unsubscribe = onSnapshot(userRef, (doc) => {
         if (doc.exists()) {
@@ -137,7 +152,8 @@ export default function FirestoreProvider({ children }) {
     getUserPhone,
     updateAddress,
     getAddress,
-    updateEmailVerificationStatus
+    updateEmailVerificationStatus,
+    saveTransaction
   };
 
   return (
