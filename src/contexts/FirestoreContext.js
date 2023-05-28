@@ -129,6 +129,16 @@ export default function FirestoreProvider({ children }) {
     }, { merge: true });
   };
 
+  // Update balance in db
+  const updateBalance = async (userId, balance) => {
+    const userRef = doc(db, "users", userId);
+    await setDoc(userRef, {
+      payments: {
+        balance: balance
+      }
+    }, { merge: true });
+  };
+
   // Set up Firestore snapshot listener
   useEffect(() => {
     if (currentUser) {
@@ -153,7 +163,8 @@ export default function FirestoreProvider({ children }) {
     updateAddress,
     getAddress,
     updateEmailVerificationStatus,
-    saveTransaction
+    saveTransaction,
+    updateBalance
   };
 
   return (
