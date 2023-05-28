@@ -14,19 +14,26 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 function Payments() {
   const { currentUser } = useAuth();
-  const { userData } = useFirestore();
+  const { userData, saveTransaction, updateBalance } = useFirestore();
   const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(false);
-  const [amount, setAmount] = useState(0); // requires value to load (only 50¢)
+  const [amount, setAmount] = useState(50); // requires value to load (only 50¢)
   const [cards, setCards] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [showPayForm, setShowPayForm] = useState(false);
   const [showCardForm, setShowCardForm] = useState(false);
   const newCardRef = useRef(null);
-  const noCardSelectedRef = useRef(null);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const balance = 1000;
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [balance, setBalance] = useState(1000);
+
+  // Get balance
+  useEffect(() => {
+    if (userData && userData.payments && userData.payments.balance) {
+      setBalance(userData.payments.balance);
+    }
+  }, [userData]);
 
   // Get the card details
   useEffect(() => {
@@ -35,8 +42,15 @@ function Payments() {
     }
   }, [userData]);
 
+  // Get transactions
+  useEffect(() => {
+    if (userData && userData.payments && userData.payments.transactions) {
+      setTransactions(userData.payments.transactions);
+    }
+  }, [userData]);
+
   // Show the payment form
-  const handlePaymentOptionChange = (e) => {
+  const handlePaymentOptionChange = async (e) => {
     if (e.target.value === 'newCard') {
       setShowCardForm(true);
       setSelectedCard(null);
@@ -65,7 +79,6 @@ function Payments() {
 
   // Create a PaymentIntent for a new card
   useEffect(() => {
-    if (currentUser) {
     fetch("https://us-central1-dashboard-c48b3.cloudfunctions.net/createPaymentIntentWithoutId", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -74,19 +87,17 @@ function Payments() {
         userId: currentUser.uid,
       }),
     })
-    .then((res) => {
+    .then(async (res) => {
       if (!res.ok) {
-        return res.text().then(text => {throw new Error(text)});
+        const text = await res.text();
+        throw new Error(text);
       }
       return res.json();
     })
     .then((data) => setClientSecret(data.clientSecret))
     .catch((error) => console.error('Error:', error));
-  }
   }, [amount, currentUser]);
-
-
-  // Create payment for stripe customer with existing card
+  
   const handlePayment = async () => {
     try {
       setLoading(true);
@@ -100,7 +111,6 @@ function Payments() {
           amount: amount,
           customerId: userData.stripeCustomerId,
           payment_method: selectedCard,
-          userId: currentUser.uid,
         }),
       });
   
@@ -119,17 +129,35 @@ function Payments() {
   
       if (result.error) {
         console.error(result.error);
-        setError(result.error);
-        setTimeout(() => setError(null), 3000);
+        setError(result.error.message);
+        setTimeout(() => setError(""), 3000);
       } else {
         // Payment successful
-        console.log('Payment succeeded:', result.paymentIntent);
+        console.log('Payment succeeded');
         setSuccess("Your payment was successful!");
-        setTimeout(() => setSuccess(null), 3000);
+        setTimeout(() => setSuccess(""), 3000);
+
+        /**
+         * --- Add payment transaction in db ---
+         * updating db on front end because of Stripe 3D Secure authentication 
+         * (confirmCardPayment)
+         */
+        await saveTransaction(
+          userData._id,
+          result.paymentIntent.id,
+          amount,
+          result.paymentIntent.status,
+        );
+
+        // Update balance
+        const newBalance = balance - (amount / 100);
+        setBalance(newBalance);
+        updateBalance(userData._id, newBalance);
       }
     } catch (error) {
       console.error('Error processing payment:', error);
-      // Handle the error
+      setError(error.message);
+      setTimeout(() => setError(""), 3000);
     } 
     setLoading(false);
   };
@@ -216,8 +244,8 @@ function Payments() {
                     </Row>
 
                     {showCardForm && clientSecret && (
-                      <Elements key={clientSecret} options={[options]} stripe={stripePromise}>
-                        <CardPaymentForm clientSecret={clientSecret} />
+                      <Elements key={clientSecret} options={options} stripe={stripePromise}>
+                        <CardPaymentForm clientSecret={clientSecret} amount={amount} />
                       </Elements>
                     )}
                     
@@ -227,7 +255,7 @@ function Payments() {
                           variant="success" 
                           className="mt-3" 
                           onClick={handlePayment}
-                          disabled={disablePayButton()}
+                          disabled={disablePayButton() || loading}
                         >
                             Pay
                         </Button>
@@ -247,7 +275,15 @@ function Payments() {
             <Card.Body>
               <Card.Title>Payment History</Card.Title>
               <hr className="text-muted" />
-
+              {transactions && transactions.map((transaction) => (
+                <div 
+                  key={transaction._id} 
+                  value={transaction._id}
+                >
+                  Payment made on {transaction.paidOn} for ${transaction.amount}.00 - {transaction.status}
+                  <hr className="text-muted m-1" />
+                </div>
+              ))}
             </Card.Body>
           </Card>
         </Col>
