@@ -14,8 +14,8 @@ export default function CardPaymentForm({ clientSecret }) {
   const elements = useElements();
   const { currentUser } = useAuth();
 
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState(null);
@@ -38,19 +38,19 @@ export default function CardPaymentForm({ clientSecret }) {
       switch (paymentIntent.status) {
         case "succeeded":
           setSuccess("Payment succeeded!");
-          setTimeout(() => setSuccess(null), 3000);
+          setTimeout(() => setSuccess(""), 3000);
           break;
         case "processing":
           setError("Your payment is processing.");
-          setTimeout(() => setError(null), 3000);
+          setTimeout(() => setError(""), 3000);
           break;
         case "requires_payment_method":
           setError("Your payment was not successful, please try again.");
-          setTimeout(() => setError(null), 3000);
+          setTimeout(() => setError(""), 3000);
           break;
         default:
           setError("Something went wrong.");
-          setTimeout(() => setError(null), 3000);
+          setTimeout(() => setError(""), 3000);
           break;
       }
     });
@@ -78,14 +78,14 @@ export default function CardPaymentForm({ clientSecret }) {
     if (error) {
       if (error.type === "card_error" || error.type === "validation_error") {
         setError(error.message);
-        setTimeout(() => setError(null), 3000);
+        setTimeout(() => setError(""), 3000);
       } else {
         setError("An unexpected error occurred.");
-        setTimeout(() => setError(null), 3000);
+        setTimeout(() => setError(""), 3000);
       }
     } else {
       setSuccess("Payment Successful!"); 
-      setTimeout(() => setSuccess(null), 3000);
+      setTimeout(() => setSuccess(""), 3000);
     }
     setIsLoading(false);
   };
@@ -116,7 +116,6 @@ export default function CardPaymentForm({ clientSecret }) {
           {isLoading ? <Spinner animation="border" variant="primary" className="ms-3"/> : "Pay"}
         </span>
       </Button>
-      {/* Show any error or success messages */}
       {success && <div className="text-success">{success}</div>}
       {error && <div className="text-danger">{error}</div>}
     </Form>
