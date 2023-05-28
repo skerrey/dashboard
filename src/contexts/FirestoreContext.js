@@ -1,4 +1,4 @@
-// Description: Authentication Context for Firebase
+// Description: Authentication Context for Firebase database
 
 import React, { useContext, useState, useEffect } from 'react';
 import { db} from '../firebase.config';
@@ -17,7 +17,7 @@ export default function FirestoreProvider({ children }) {
   const [userData, setUserData] = useState();
   const { formattedDateDay, formattedDateHour } = FormattedDate();
 
-  // Add Maintenance request to Firestore database
+  // Add Maintenance request to db
   const addMaintenanceRequest = async (userId, maintenanceId, file, issue, otherMessage, message) => {
     const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
@@ -45,7 +45,7 @@ export default function FirestoreProvider({ children }) {
     }, { merge: true });
   };
 
-  // Get maintenance requests from Firestore database and sets them to state
+  // Get maintenance requests from db and sets them to state
   const getMaintenanceRequests = async (userId, setMaintenanceRequests) => {
     const userRef = doc(db, "users", userId);
     const userDoc = await getDoc(userRef);
@@ -54,7 +54,7 @@ export default function FirestoreProvider({ children }) {
     }
   };
 
-  // Add Contact Us message to Firestore database
+  // Add Contact Us message to db
   const addContactUsMessage = async (userId, messageId, subject, message) => {
     const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
@@ -72,7 +72,7 @@ export default function FirestoreProvider({ children }) {
     }, { merge: true });
   };
 
-  // Get user phone from Firestore
+  // Get user phone from db
   const getUserPhone = async (userId) => {
     const userRef = doc(db, "users", userId);
     const userDoc = await getDoc(userRef);
@@ -82,7 +82,7 @@ export default function FirestoreProvider({ children }) {
     return null;
   };
 
-  // Update user address in Firestore
+  // Update user address in d
   const updateAddress = async (userId, address, address2, city, state, zip) => {
     const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
@@ -96,7 +96,7 @@ export default function FirestoreProvider({ children }) {
     }, { merge: true });
   };
 
-  // Get user address from Firestore
+  // Get user address from db
   const getAddress = async (userId) => {
     const userRef = doc(db, "users", userId);
     const userDoc = await getDoc(userRef);
