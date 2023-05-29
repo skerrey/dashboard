@@ -1,8 +1,10 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from 'react-bootstrap';
+import { useFirestore } from '../contexts/FirestoreContext';
 
 function UserCard({ card }) {
+  const { userData, deleteCard } = useFirestore();
 
   // Icon card types
   const getCardIcon = (brand) => {
@@ -24,11 +26,21 @@ function UserCard({ card }) {
     }
   };
 
+  const deletePaymentCard = async (cardId) => {
+    if (cardId) {
+      await deleteCard(userData._id, card._id);
+      console.log(cardId + ' deleted');
+    } else {
+      console.error('Invalid card ID');
+    }
+  };
+  
+
   return (
     <div className="d-inline-flex justify-content-between align-items-center bg-light rounded w-100 mt-1">
       <FontAwesomeIcon icon={getCardIcon(card.brand)} size="2xl" />
       <span>ending in {card.last4}</span>
-      <Button variant="light">
+      <Button variant="light" onClick={() => deletePaymentCard(card._id)}>
         <FontAwesomeIcon icon="fa-solid fa-trash" size="xs" className="text-danger" />
       </Button>
     </div>
