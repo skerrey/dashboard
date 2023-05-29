@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useFirestore } from "../contexts/FirestoreContext";
 import { Button, Form, Spinner } from 'react-bootstrap';
