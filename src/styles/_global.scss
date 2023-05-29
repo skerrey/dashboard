@@ -46,3 +46,20 @@
     color: variables.$primary-text;
   }
 }
+
+// Maintenance and Payments history
+.history {
+  max-height: 65vh;
+  overflow-y: scroll;
+  @media screen and (max-width: 576px) {
+
+  }
+    
+  .created-at, maintenance-id {
+    font-size: 14px;
+  }
+
+  .maintenance-id {
+    font-size: 12px;
+  }
+}
