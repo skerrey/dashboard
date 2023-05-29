@@ -78,7 +78,7 @@ function PaymentMethods() {
   };
 
   return (
-    <Col className="col">
+    <div className="pt-3">
       <Card className="card-payments">
         <Card.Body>
           <Card.Title>Payment Methods</Card.Title>
@@ -109,7 +109,7 @@ function PaymentMethods() {
           </Row>
         </Card.Body>
       </Card>
-    </Col>
+    </div>
   )
 }
 
