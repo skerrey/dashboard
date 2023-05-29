@@ -189,9 +189,7 @@ exports.createStripeCustomer = functions.https.onRequest((req, res) => {
  */ 
 exports.setupPaymentMethod = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
-
-    const paymentMethodId = req.body.paymentMethodId;
-    const customerId = req.body.customerId;
+    const { paymentMethodId, customerId } = req.body;
 
     if (!paymentMethodId || !customerId) {
       res.status(400).send({ error: 'Bad Request: Missing fields' });
@@ -234,8 +232,7 @@ exports.setupPaymentMethod = functions.https.onRequest((req, res) => {
  */
 exports.deleteCard = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
-    const customerId = req.body.customerId;
-    const cardId = req.body.cardId;
+    const { customerId, cardId } = req.body;
 
     if (!customerId || !cardId) {
       res.status(400).json({ error: 'Bad Request: Missing fields' });
