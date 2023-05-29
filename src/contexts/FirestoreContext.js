@@ -115,15 +115,17 @@ export default function FirestoreProvider({ children }) {
   };
 
   // Save transaction to the db
-  const saveTransaction = async (userId, paymentIntentId, amount, paymentStatus) => {
+  const saveTransaction = async (userId, paymentIntentId, amount, paymentStatus, paymentMethodId) => {
     const userRef = doc(db, "users", userId);
+
     await setDoc(userRef, {
       payments: {
-        transactions: arrayUnion({          
-          _id: paymentIntentId,
+        transactions: arrayUnion({
+          _id: paymentIntentId,          
           paidOn: formattedDateDay, 
           amount: amount / 100,
-          status: paymentStatus
+          status: paymentStatus,
+          paymentMethodId: paymentMethodId,
         })
       }
     }, { merge: true });
