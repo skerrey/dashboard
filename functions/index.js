@@ -230,5 +230,31 @@ exports.setupPaymentMethod = functions.https.onRequest((req, res) => {
 });
 
 /**
- * Delete Card from Stripe
+ * Delete Card from Stripe customer
  */
+exports.deleteCard = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    const customerId = req.body.customerId;
+    const cardId = req.body.cardId;
+
+    if (!customerId || !cardId) {
+      res.status(400).json({ error: 'Bad Request: Missing fields' });
+      return;
+    }
+
+    try {
+      await stripe.paymentMethods.detach(cardId);
+
+      // Remove the card from the user's payment methods in the db
+      const db = admin.firestore();
+      await db.collection('users').doc(customerId).update({
+        'payments.cards': admin.firestore.FieldValue.arrayRemove(cardId)
+      });
+
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error('Error deleting card:', error);
+      res.status(500).json({ error: 'An error occurred while deleting the card' });
+    }
+  });
+});
