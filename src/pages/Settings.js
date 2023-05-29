@@ -78,7 +78,11 @@ function Settings() {
     // check if current password is correct
     const isPasswordCorrect = await verifyPassword(verifyCurrentPassword);
     if (!isPasswordCorrect) {
-      return setErrorDelAccount('Incorrect password');
+      setErrorDelAccount('Incorrect password');
+      setTimeout(() => {
+        setErrorDelAccount('');
+      }, 3000);
+      return;
     }
 
     try {
@@ -137,6 +141,7 @@ function Settings() {
                 Delete Account
               </Button>
               <Modal show={show} onHide={handleClose}>
+                <Form>
                 <Modal.Header closeButton>
                   <Modal.Title>Delete Account</Modal.Title>
                 </Modal.Header>
@@ -145,7 +150,7 @@ function Settings() {
                     Deleting your account will remove all your data from our servers. This action cannot be undone.
                   </div>
                   <br/>
-                  <Form>
+                  
                     {errorDelAccount && <Alert variant="danger">{errorDelAccount}</Alert>}
                     <Form.Group id="verify-password-for-del" className="my-2">
                       <Form.Control 
@@ -156,16 +161,17 @@ function Settings() {
                       ref={verifyCurrentPasswordRef} 
                       />
                     </Form.Group>
-                  </Form>
+                  
                 </Modal.Body>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={handleClose}>
                     CANCEL
                   </Button>
-                  <Button variant="danger" onClick={deleteUserAccount}>
+                  <Button variant="danger" type="submit" onClick={deleteUserAccount}>
                     DELETE ACCOUNT
                   </Button>
                 </Modal.Footer>
+                </Form>
               </Modal>
             </Card.Body>
           </Card>
