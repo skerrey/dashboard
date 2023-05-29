@@ -10,17 +10,17 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button, Form, Spinner } from 'react-bootstrap';
 
-export default function CardPaymentForm({ clientSecret, amount }) {
+export default function CardPaymentForm({ 
+  clientSecret, 
+  amount, 
+  resetAmountInput, 
+  checkoutForm 
+}) {
   const stripe = useStripe();
   const elements = useElements();
-  const { currentUser } = useAuth();
   const { saveTransaction, userData } = useFirestore();
-
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -102,9 +102,13 @@ export default function CardPaymentForm({ clientSecret, amount }) {
         result.paymentIntent.id,
         amount,
         result.paymentIntent.status,
+        result.paymentIntent.payment_method
       );
     }
     setIsLoading(false);
+    elements.getElement(CardElement).clear();
+    resetAmountInput();
+    checkoutForm.current.reset();
   };
 
   const cardElementOptions = {
