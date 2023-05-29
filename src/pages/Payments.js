@@ -132,12 +132,12 @@ function Payments() {
       if (result.error) {
         console.error(result.error);
         setError(result.error.message);
-        setTimeout(() => setError(""), 3000);
+        setTimeout(() => setError(""), 4000);
       } else {
         // Payment successful
         console.log('Payment succeeded');
         setSuccess("Your payment was successful!");
-        setTimeout(() => setSuccess(""), 3000);
+        setTimeout(() => setSuccess(""), 4000);
 
         /**
          * --- Add payment transaction in db ---
@@ -160,7 +160,7 @@ function Payments() {
     } catch (error) {
       console.error('Error processing payment:', error);
       setError(error.message);
-      setTimeout(() => setError(""), 3000);
+      setTimeout(() => setError(""), 4000);
     } 
     setLoading(false);
     resetAmountInput();
