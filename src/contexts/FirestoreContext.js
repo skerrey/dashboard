@@ -1,10 +1,18 @@
 // Description: Authentication Context for Firebase database
 
 import React, { useContext, useState, useEffect } from 'react';
-import { db} from '../firebase.config';
-import { doc, updateDoc, arrayUnion, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
+import { db } from '../firebase.config';
 import FormattedDate from '../utils/FormattedDate';
 import { useAuth } from '../contexts/AuthContext';
+import { 
+  doc, 
+  updateDoc, 
+  arrayUnion, 
+  getDoc, 
+  onSnapshot, 
+  setDoc, 
+  arrayRemove,
+} from 'firebase/firestore';
 
 const FirestoreContext = React.createContext();
 
@@ -141,6 +149,22 @@ export default function FirestoreProvider({ children }) {
     }, { merge: true });
   };
 
+  // Delete saved card from db
+  const deleteCard = async (userId, cardId) => {
+    const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+  
+    if (userDoc.exists()) {
+      const updatedCards = userDoc.data().payments.cards.filter((card) => card._id !== cardId);
+      await updateDoc(userRef, {
+        payments: {
+          cards: updatedCards
+        }
+      }, { merge: true });
+    }
+  };
+  
+
   // Set up Firestore snapshot listener
   useEffect(() => {
     if (currentUser) {
@@ -166,7 +190,8 @@ export default function FirestoreProvider({ children }) {
     getAddress,
     updateEmailVerificationStatus,
     saveTransaction,
-    updateBalance
+    updateBalance,
+    deleteCard
   };
 
   return (
