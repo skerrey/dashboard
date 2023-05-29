@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { Row, Col, Card, Form, Button, Badge } from 'react-bootstrap';
-import "./Maintenance.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useAuth } from '../contexts/AuthContext';
 import { useFirestore } from "../contexts/FirestoreContext";
@@ -177,7 +176,7 @@ function ContactUs() {
           <Card.Body>
             <Card.Title>Previous Requests</Card.Title>
               <hr className="text-muted" />
-              <div className="requests">
+              <div className="history">
 
                 {maintenanceRequests && [...maintenanceRequests].reverse().map((data, index) => (
                   <div key={index}>
