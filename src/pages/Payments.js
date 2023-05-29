@@ -1,7 +1,7 @@
 // Description: Payments page
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Row, Col, Card, Button, InputGroup, Form, Spinner, Collapse } from 'react-bootstrap';
+import { Row, Col, Card, Button, InputGroup, Form, Spinner, Collapse, Badge } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
@@ -21,31 +21,28 @@ function Payments() {
   const [cards, setCards] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [newCardObj, setNewCardObj] = useState({}); // { brand: "", last4: "" }
   const [showPayForm, setShowPayForm] = useState(false);
   const [showCardForm, setShowCardForm] = useState(false);
-  const newCardRef = useRef(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [balance, setBalance] = useState(1000);
+  const newCardRef = useRef(null);
+  const checkoutForm = useRef(null);
 
-  // Get balance
+  // Get balance, cards, and transactions from db
   useEffect(() => {
-    if (userData && userData.payments && userData.payments.balance) {
-      setBalance(userData.payments.balance);
-    }
-  }, [userData]);
-
-  // Get the card details
-  useEffect(() => {
-    if (userData && userData.payments && userData.payments.cards) {
-      setCards(userData.payments.cards);
-    }
-  }, [userData]);
-
-  // Get transactions
-  useEffect(() => {
-    if (userData && userData.payments && userData.payments.transactions) {
-      setTransactions(userData.payments.transactions);
+    if (userData && userData.payments) {
+      const { balance, cards, transactions } = userData.payments;
+      if (balance) { 
+        setBalance(balance);
+      }
+      if (cards) {
+        setCards(cards);
+      }
+      if (transactions) {
+        setTransactions(transactions);
+      }
     }
   }, [userData]);
 
@@ -61,6 +58,11 @@ function Payments() {
       setSelectedCard(e.target.value);
     }
   };
+
+  // Clear amount input in form
+  const resetAmountInput = () => {
+    setAmount(50);
+  }
 
   // Disable payment button until user puts in at least 50¢
   const disablePayButton = () => {
@@ -147,6 +149,7 @@ function Payments() {
           result.paymentIntent.id,
           amount,
           result.paymentIntent.status,
+          result.paymentIntent.payment_method
         );
 
         // Update balance
@@ -160,6 +163,8 @@ function Payments() {
       setTimeout(() => setError(""), 3000);
     } 
     setLoading(false);
+    resetAmountInput();
+    checkoutForm.current.reset();
   };
   
   const appearance = {
@@ -180,7 +185,7 @@ function Payments() {
         <Col className="col">
           <Card className="card-payments">
             <Card.Body>
-              <Card.Title>Pay Rent</Card.Title>
+              <Card.Title>Payment</Card.Title>
               <hr className="text-muted" />
               <div className="d-flex justify-content-between">
                 <div> 
@@ -211,9 +216,12 @@ function Payments() {
                 </Button>
                 <Collapse in={showPayForm}>
                   <div id="pay-form">
-                    <h3>Checkout</h3>
+                    <h3>Pay Rent</h3>
+                    <Form ref={checkoutForm}>
                     <Row>
+
                       <Col>
+
                         <div>Amount</div>
                         <InputGroup>
                           <InputGroup.Text id="payment">$</InputGroup.Text>
@@ -240,12 +248,20 @@ function Payments() {
                           ))}
                           <option value="newCard" ref={newCardRef}>---Pay with new card---</option>
                         </Form.Select>
+                        
                       </Col>
+                      
                     </Row>
+                    </Form>
 
                     {showCardForm && clientSecret && (
                       <Elements key={clientSecret} options={options} stripe={stripePromise}>
-                        <CardPaymentForm clientSecret={clientSecret} amount={amount} />
+                        <CardPaymentForm 
+                          clientSecret={clientSecret} 
+                          amount={amount} 
+                          resetAmountInput={resetAmountInput}
+                          checkoutForm={checkoutForm}
+                        />
                       </Elements>
                     )}
                     
@@ -269,27 +285,39 @@ function Payments() {
                 </Collapse>       
             </Card.Body>
           </Card>
+
+          {/* Payment Methods */}
+          <PaymentMethods />
         </Col>
         <Col className="col">
           <Card className="card-payments">
             <Card.Body>
               <Card.Title>Payment History</Card.Title>
               <hr className="text-muted" />
-              {transactions && transactions.map((transaction) => (
-                <div 
-                  key={transaction._id} 
-                  value={transaction._id}
-                >
-                  Payment made on {transaction.paidOn} for ${transaction.amount}.00 - {transaction.status}
-                  <hr className="text-muted m-1" />
-                </div>
+              <div className="history">
+              {transactions && [...transactions].reverse().map((data, index) => (
+                  <div key={index}>
+                    <div className="d-flex justify-content-between pe-2 pb-2">
+                      <div className="fw-bold">Payment</div>
+                      <div><Badge bg="success">Paid</Badge></div>
+                    </div>
+                    <div className="text-muted me-2 mb-2">
+                      Total:
+                    </div>
+                    <div className="h3 p-2 mb-3 me-2 bg-light border">
+                      ${data.amount}.00
+                    </div>
+                    <div className="created-at pb-2">
+                      Payment made on <strong>{data.paidOn}</strong>
+                    </div>
+                    <div className="text-muted maintenance-id">Transaction ID: {data._id}</div>
+                    <hr/>
+                  </div>
               ))}
+              </div>
             </Card.Body>
           </Card>
         </Col>
-      </Row>
-      <Row xs={1} sm={1} md={1} lg={2}>
-        <PaymentMethods />
       </Row>
     </div>
   )
