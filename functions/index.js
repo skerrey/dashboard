@@ -1,10 +1,9 @@
-// Description: This file is used to deploy firebase functions and backend server
+// Description: Deploy firebase functions and backend server
 
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const serviceAccount = require("./serviceAccountKey.json");
 
-require('dotenv').config();
 const cors = require("cors")();
 
 // Initialize the app with a service account, granting admin privileges
@@ -56,27 +55,26 @@ exports.createPaymentIntent = functions.https.onRequest(async (req, res) => {
       return;
     }
 
-    const { amount, customerId, payment_method } = req.body;
+    const {amount, customerId, payment_method} = req.body;
 
     if (!amount || !customerId || !payment_method) {
       res.status(400).send("Bad Request: Missing fields");
       return;
     }
-    
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: "usd",
         customer: customerId,
-        payment_method: payment_method, 
+        payment_method: payment_method,
       });
 
       // Saves transaction to db on frontend
 
-      res.json({ clientSecret: paymentIntent.client_secret });
+      res.json({clientSecret: paymentIntent.client_secret});
     } catch (error) {
       console.error("Error creating PaymentIntent", error);
-      res.status(500).json({ error: "An error occurred attempting to create PaymentIntent" });
+      res.status(500).json({error: "An error occurred attempting to create PaymentIntent"});
     }
   });
 });
@@ -91,13 +89,12 @@ exports.createPaymentIntentWithoutId = functions.https.onRequest(async (req, res
       return;
     }
 
-    const { amount, userId } = req.body;
+    const {amount, userId} = req.body;
 
     if (!amount || !userId) {
       res.status(400).send("Bad Request: Missing fields");
       return;
     }
-    
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
@@ -106,10 +103,10 @@ exports.createPaymentIntentWithoutId = functions.https.onRequest(async (req, res
 
       // Saves transaction to db on frontend
 
-      res.json({ clientSecret: paymentIntent.client_secret });
+      res.json({clientSecret: paymentIntent.client_secret});
     } catch (error) {
       console.error("Error creating PaymentIntent", error);
-      res.status(500).json({ error: "An error occurred attempting to create PaymentIntentWithoutId" });
+      res.status(500).json({error: "An error occurred attempting to create PaymentIntentWithoutId"});
     }
   });
 });
@@ -121,9 +118,9 @@ exports.createSetupIntent = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
       const setupIntent = await stripe.setupIntents.create();
-      res.status(200).send({ clientSecret: setupIntent.client_secret });
+      res.status(200).send({clientSecret: setupIntent.client_secret});
     } catch (error) {
-      res.status(500).send({ error: error.message });
+      res.status(500).send({error: error.message});
     }
   });
 });
@@ -136,16 +133,16 @@ exports.getPaymentMethod = functions.https.onRequest((req, res) => {
     const paymentMethodId = req.body.paymentMethodId;
 
     if (!paymentMethodId) {
-      res.status(400).send({ error: 'Bad Request: Missing PaymentMethod ID' });
+      res.status(400).send({error: "Bad Request: Missing PaymentMethod ID"});
       return;
     }
 
     try {
       const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
-      res.status(200).send({ paymentMethod });
+      res.status(200).send({paymentMethod});
     } catch (error) {
-      console.error('Error retrieving PaymentMethod:', error);
-      res.status(500).send({ error: 'An error occurred while retrieving a PaymentMethod' });
+      console.error("Error retrieving PaymentMethod:", error);
+      res.status(500).send({error: "An error occurred while retrieving a PaymentMethod"});
     }
   });
 });
@@ -158,7 +155,7 @@ exports.createStripeCustomer = functions.https.onRequest((req, res) => {
     const user = req.body.user;
 
     if (!user) {
-      res.status(400).send({ error: 'Bad Request: Missing fields' });
+      res.status(400).send({error: "Bad Request: Missing fields"});
       return;
     }
 
@@ -171,35 +168,34 @@ exports.createStripeCustomer = functions.https.onRequest((req, res) => {
 
       // Save the customer ID to the Firestore database
       const db = admin.firestore();
-      await db.collection('users').doc(user.uid).set({
+      await db.collection("users").doc(user.uid).set({
         stripeCustomerId: customer.id,
       }, {merge: true});
 
-      res.status(200).send({ success: true });
+      res.status(200).send({success: true});
     } catch (error) {
-      console.error('Error creating Stripe customer:', error);
-      res.status(500).send({ error: 'An error occurred while creating a Stripe customer' });
+      console.error("Error creating Stripe customer:", error);
+      res.status(500).send({error: "An error occurred while creating a Stripe customer"});
     }
   });
 });
 
 /**
  * Set up a PaymentMethod via Stripe
- *  
- */ 
+ */
 exports.setupPaymentMethod = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
-    const { paymentMethodId, customerId } = req.body;
+    const {paymentMethodId, customerId} = req.body;
 
     if (!paymentMethodId || !customerId) {
-      res.status(400).send({ error: 'Bad Request: Missing fields' });
+      res.status(400).send({error: "Bad Request: Missing fields"});
       return;
     }
 
     try {
       const paymentMethod = await stripe.paymentMethods.attach(
         paymentMethodId,
-        { customer: customerId }
+        {customer: customerId},
       );
 
       // Card details
@@ -213,16 +209,16 @@ exports.setupPaymentMethod = functions.https.onRequest((req, res) => {
 
       // // Save the payment method to db
       const db = admin.firestore();
-      await db.collection('users').doc(customerId).set({
+      await db.collection("users").doc(customerId).set({
         payments: {
-          cards: admin.firestore.FieldValue.arrayUnion(cardData) 
-        } 
+          cards: admin.firestore.FieldValue.arrayUnion(cardData),
+        },
       }, {merge: true});
 
-      res.status(200).send({ success: true });
+      res.status(200).send({success: true});
     } catch (error) {
-      console.error('Error setting up PaymentMethod:', error);
-      res.status(500).send({ error: 'An error occurred while setting up a PaymentMethod' });
+      console.error("Error setting up PaymentMethod:", error);
+      res.status(500).send({error: "An error occurred while setting up a PaymentMethod"});
     }
   });
 });
@@ -232,10 +228,10 @@ exports.setupPaymentMethod = functions.https.onRequest((req, res) => {
  */
 exports.deleteCard = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
-    const { customerId, cardId } = req.body;
+    const {customerId, cardId} = req.body;
 
     if (!customerId || !cardId) {
-      res.status(400).json({ error: 'Bad Request: Missing fields' });
+      res.status(400).json({error: "Bad Request: Missing fields"});
       return;
     }
 
@@ -244,14 +240,14 @@ exports.deleteCard = functions.https.onRequest((req, res) => {
 
       // Remove the card from the user's payment methods in the db
       const db = admin.firestore();
-      await db.collection('users').doc(customerId).update({
-        'payments.cards': admin.firestore.FieldValue.arrayRemove(cardId)
+      await db.collection("users").doc(customerId).update({
+        "payments.cards": admin.firestore.FieldValue.arrayRemove(cardId),
       });
 
-      res.status(200).json({ success: true });
+      res.status(200).json({success: true});
     } catch (error) {
-      console.error('Error deleting card:', error);
-      res.status(500).json({ error: 'An error occurred while deleting the card' });
+      console.error("Error deleting card:", error);
+      res.status(500).json({error: "An error occurred while deleting the card"});
     }
   });
 });
