@@ -21,7 +21,6 @@ function Payments() {
   const [cards, setCards] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
-  const [newCardObj, setNewCardObj] = useState({}); // { brand: "", last4: "" }
   const [showPayForm, setShowPayForm] = useState(false);
   const [showCardForm, setShowCardForm] = useState(false);
   const [error, setError] = useState("");
