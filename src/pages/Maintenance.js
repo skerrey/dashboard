@@ -188,7 +188,10 @@ function ContactUs() {
                         {data.status.open ? <Badge bg="danger">Open</Badge> : <Badge bg="success">Closed</Badge>}
                       </div>
                     </div>
-                    <div className="text-muted border me-2 mb-2 bg-light">{data.message}</div>
+                    <div className="text-muted me-2 mb-2">
+                      Message:
+                    </div>
+                    <div className="text-muted border p-2 me-2 mb-3 bg-light rounded-1">{data.message}</div>
                     <div className="created-at pb-2">Maintenance request created on <strong>{data.date.day}</strong> at <strong>{data.date.time}</strong></div>
                     <div className="text-muted maintenance-id">Maintenance ID: {data._id}</div>
                     <hr/>
