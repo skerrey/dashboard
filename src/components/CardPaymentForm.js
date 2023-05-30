@@ -1,7 +1,6 @@
 // Description: Stripe Payment form for card the Payment Page
 
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
 import { useFirestore } from "../contexts/FirestoreContext";
 import {
   CardElement,
@@ -23,6 +22,16 @@ export default function CardPaymentForm({
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Disable payment button until user puts in at least 50¢
+  const disablePayButton = () => {
+    if (amount <= 50) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Get client secret and paymentIntent from Stripe
   useEffect(() => {
     if (!stripe) {
       return;
@@ -58,6 +67,7 @@ export default function CardPaymentForm({
     });
   }, [stripe]);
 
+  // Handle payment
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -132,7 +142,7 @@ export default function CardPaymentForm({
   return (
     <Form id="payment-form" onSubmit={handleSubmit}>
       <CardElement className="my-3 bg-light p-2" id="card" options={cardElementOptions} />
-      <Button variant="danger" disabled={isLoading || !stripe || !elements} type="submit">
+      <Button variant="success" disabled={isLoading || !stripe || !elements || disablePayButton()} type="submit">
         <span id="button-text">
           {isLoading ? <Spinner animation="border" variant="primary" className="ms-3"/> : "Pay"}
         </span>
