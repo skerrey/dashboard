@@ -3,3 +3,6 @@
 
 # firebase key
 serviceAccountKey.json
+
+# environment variables
+.env
