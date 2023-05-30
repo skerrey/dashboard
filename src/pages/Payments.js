@@ -304,7 +304,7 @@ function Payments() {
                     <div className="text-muted me-2 mb-2">
                       Total:
                     </div>
-                    <div className="h3 p-2 mb-3 me-2 bg-light border">
+                    <div className="h3 p-2 mb-3 me-2 bg-light border rounded-1">
                       ${data.amount}.00
                     </div>
                     <div className="created-at pb-2">
