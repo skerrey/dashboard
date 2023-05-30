@@ -15,6 +15,8 @@ module.exports = {
     "prefer-arrow-callback": "error",
     "quotes": ["error", "double", {"allowTemplateLiterals": true}],
     "indent": "off",
+    "max-len": ["error", {"code": 105, "ignoreTrailingComments": true}],
+    "camelcase": "off",
   },
   overrides: [
     {
