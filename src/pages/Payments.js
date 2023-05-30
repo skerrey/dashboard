@@ -264,11 +264,10 @@ function Payments() {
                       </Elements>
                     )}
                     
-                    <div className="d-flex align-items-center">
+                    <div className="d-flex align-items-center mt-3">
                       {selectedCard && 
                         <Button 
                           variant="success" 
-                          className="mt-3" 
                           onClick={handlePayment}
                           disabled={disablePayButton() || loading}
                         >

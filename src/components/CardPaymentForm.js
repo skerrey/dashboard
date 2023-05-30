@@ -142,11 +142,12 @@ export default function CardPaymentForm({
   return (
     <Form id="payment-form" onSubmit={handleSubmit}>
       <CardElement className="my-3 bg-light p-2" id="card" options={cardElementOptions} />
-      <Button variant="success" disabled={isLoading || !stripe || !elements || disablePayButton()} type="submit">
-        <span id="button-text">
-          {isLoading ? <Spinner animation="border" variant="primary" className="ms-3"/> : "Pay"}
-        </span>
-      </Button>
+      <div className="d-flex align-items-center mt-3">
+        <Button variant="success" disabled={isLoading || !stripe || !elements} type="submit">
+          Pay
+        </Button>
+        {isLoading && <Spinner animation="border" variant="primary" className="ms-3"/> }
+      </div>
       {success && <div className="text-success">{success}</div>}
       {error && <div className="text-danger">{error}</div>}
     </Form>
