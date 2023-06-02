@@ -32,7 +32,7 @@ function Main() {
                   <p>Current Balance:</p>
                   <div className="h5 mb-0">
                     {
-                      user && user.payments.balance 
+                      user && user.payments && user.payments.balance 
                         ?
                         <div>${user.payments.balance.toFixed(2)}</div>
                         :
@@ -89,7 +89,7 @@ function Main() {
               <hr className="text-muted my-1" />
               {user && !user.address 
                 ?
-                <div className="fw-bold p-2 mt-3 border bg-light  rounded-1">
+                <div className="fw-bold p-2 mt-3 border bg-light bg-gradient rounded-1">
                   Please add your current address to your&nbsp;
                   <NavLink to="/account-profile">account profile</NavLink>.
                 </div>
