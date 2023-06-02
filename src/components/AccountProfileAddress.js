@@ -100,7 +100,7 @@ function AccountProfileAddress() {
                     onChange={(e) => setSelectedState(e.target.value)}
                     required
                   >
-                    <option value="">Select State</option>
+                    <option value="">--</option>
                     {states.map((state) => (
                       <option key={state} value={state} id={state} aria-labelledby={state}>
                         {state}
