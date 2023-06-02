@@ -26,7 +26,7 @@ function Main() {
           <Card className="card-payments">
             <Card.Body>
               <Card.Title>Payments</Card.Title>
-              <hr className="text-muted mb-1" />
+              <hr className="text-muted my-1" />
               <Row className="align-items-end justify-content-between">
                 <Col className="col-auto">
                   <p>Current Balance:</p>
@@ -59,7 +59,7 @@ function Main() {
           <Card className="card-maintenance">
             <Card.Body>
               <Card.Title>Maintenance</Card.Title>
-              <hr className="text-muted mb-1" />
+              <hr className="text-muted my-1" />
               <Row className="align-items-end justify-content-between">
                 <Col className="col-auto">
                   <p className="fst-italic text-muted">
@@ -86,10 +86,24 @@ function Main() {
           <Card className="card-account">
             <Card.Body>
               <Card.Title>Account Profile</Card.Title>
-              <Card.Text>
-                Some quick example text to build on the card title and make up the
-                bulk of the card's content.
-              </Card.Text>
+              <hr className="text-muted my-1" />
+              <Row className="align-items-end justify-content-between">
+                <Col className="col-auto">
+                  <p className="fst-italic text-muted">
+                    Have an issue with your apartment?
+                  </p>
+                  <div className="h5 mb-0">
+                    Create a maintenance request
+                  </div>
+                </Col>
+                <Col className="col-auto">
+                  <Button variant="warning">
+                    <NavLink to="/maintenance" className="nav-link">
+                      Maintenance
+                    </NavLink>
+                  </Button>
+                </Col>
+              </Row>
             </Card.Body>
           </Card>
         </Col>

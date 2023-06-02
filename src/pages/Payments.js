@@ -185,7 +185,7 @@ function Payments() {
           <Card className="card-payments">
             <Card.Body>
               <Card.Title>Payment</Card.Title>
-              <hr className="text-muted" />
+              <hr className="text-muted mt-1" />
               <div className="d-flex justify-content-between">
                 <div> 
                   <h5>Balance:</h5>
@@ -202,7 +202,6 @@ function Payments() {
                   </ul>
                 </div>
               </div>
-              <hr className="text-muted mt-1" />
 
               <Button
                   onClick={() => setShowPayForm(!showPayForm)}
@@ -291,7 +290,7 @@ function Payments() {
           <Card className="card-payments">
             <Card.Body>
               <Card.Title>Payment History</Card.Title>
-              <hr className="text-muted" />
+              <hr className="text-muted mt-1" />
               <div className="history">
               {transactions && [...transactions].reverse().map((data, index) => (
                   <div key={index}>

@@ -175,7 +175,7 @@ function ContactUs() {
         <Card className="card-maintenance">
           <Card.Body>
             <Card.Title>Previous Requests</Card.Title>
-              <hr className="text-muted" />
+              <hr className="text-muted mt-1" />
               <div className="history">
 
                 {maintenanceRequests && [...maintenanceRequests].reverse().map((data, index) => (
