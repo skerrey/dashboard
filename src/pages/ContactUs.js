@@ -66,8 +66,8 @@ function ContactUs() {
           <Card.Body>
             <Card.Title>Contact Information</Card.Title>
               <p><FontAwesomeIcon icon="fa-solid fa-phone" size="lg" className="text-primary" /> &nbsp;555-555-5555</p>
-              <p><FontAwesomeIcon icon="fa-solid fa-envelope" size="lg" className="text-primary" /> &nbsp;info@mpm.com</p>
-              <p><FontAwesomeIcon icon="fa-solid fa-location-dot" size="lg" className="text-primary" /> &nbsp; 555 Center Street, Rome, USA</p>
+              <p><FontAwesomeIcon icon="fa-solid fa-envelope" size="lg" className="text-primary" /> &nbsp;info@mail.com</p>
+              <p><FontAwesomeIcon icon="fa-solid fa-location-dot" size="lg" className="text-primary" /> &nbsp; 123 Main St, CityTown, USA</p>
           </Card.Body>
         </Card>
       </Col>
