@@ -5,6 +5,7 @@ import './Header.scss';
 import logo from "../images/logo.svg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useFirestore } from '../contexts/FirestoreContext';
 
@@ -34,14 +35,16 @@ function Header() {
         setAddress(address);
       })
       .catch((error) => {
-        console.log("Error getting user phone:", error);
+        console.log("Error getting user address:", error);
       });
   }, [getAddress, userId]);
 
   return (
     <div className="header">
       <div>
-        <img src={logo} alt="logo" className="logo" />
+        <NavLink to="/" className="nav-link">
+          <img src={logo} alt="logo" className="logo" />
+        </NavLink>
       </div>
       <div>
         <span className="address-title">Property address</span>
@@ -50,7 +53,8 @@ function Header() {
             `${address.address} ${address.address2}, ${address.city}, ${address.state} ${address.zip}`  
             : address 
             ? `${address.address}, ${address.city}, ${address.state} ${address.zip}`
-            :  '(no address listed)' // default address
+            : 
+              <NavLink to="/account-profile">(add address)</NavLink>
           }
         </span>
         <button className="btn btn-logout" onClick={handleLogout}>
