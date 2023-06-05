@@ -22,15 +22,6 @@ export default function CardPaymentForm({
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Disable payment button until user puts in at least 50¢
-  const disablePayButton = () => {
-    if (amount <= 50) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   // Get client secret and paymentIntent from Stripe
   useEffect(() => {
     if (!stripe) {
