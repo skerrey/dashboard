@@ -12,8 +12,8 @@ export default function AdminRoutes({ children }) {
   return (
     currentUser && userData && userData.isAdmin
     ? children 
-    : currentUser 
-    ? <Navigate to="/" redirect /> // Redirect to home if not an admin
+    : currentUser && userData && !userData.isAdmin
+    ? <Navigate to="/admin-login" redirect /> // Redirect to home if not an admin
     : <Navigate to="/login" redirect /> // Redirect to login if user is not logged in OR if not admin
   )
 }
