@@ -64,6 +64,7 @@ function AccountProfileAddress() {
       setError('Failed to add address');
       setTimeout(() => { setError(''); }, 4000);
     }
+    setLoading(false);
   }
 
   return (
