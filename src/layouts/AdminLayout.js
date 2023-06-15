@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 import { useSidebar } from '../utils/Responsive';
 import { Container } from 'react-bootstrap';
 
-function PrivateLayout() {
+function AdminLayout() {
   const { isSidebarOpen, toggleSidebar, isMobile } = useSidebar();
 
   const handleClose = () => {
@@ -47,4 +47,4 @@ function PrivateLayout() {
   );
 }
 
-export default PrivateLayout;
+export default AdminLayout;
