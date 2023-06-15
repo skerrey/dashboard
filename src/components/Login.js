@@ -5,6 +5,7 @@ import { Form, Button, Card, Alert, Container, Row, Col } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext';
 import { NavLink, useNavigate } from 'react-router-dom';
 import logo from '../images/logo.svg';
+import Announcement from './Announcement';
 
 export default function Login() {
   const emailRef = useRef();
@@ -13,7 +14,6 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
 
   async function handleSubmit(e) { // login user on submit
     e.preventDefault(); 
@@ -38,6 +38,16 @@ export default function Login() {
 
   return (
     <>
+      <Announcement
+        header="Use the following credentials to login:"
+        body={`
+          <strong>Email:</strong> example@test.com
+          <br />
+          <strong>Password:</strong> password123
+          <br />
+          <i>Or Sign Up a new user</i>
+        `}
+      />
       <Container className="px-sm-0 px-md-1">
         <Row className="pt-sm-5 mb-0">
           <Col sm={9} md={7} lg={6} xl={5} className="px-0 mx-auto pt-sm-5">
