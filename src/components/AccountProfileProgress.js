@@ -201,7 +201,7 @@ function AccountProfileProgress() {
                     <div>recently</div>
                   </>
                   :
-                  !currentUser.emailVerified && userData.emailVerification && userData.emailVerification === "sent" ?
+                  currentUser && !currentUser.emailVerified && userData && userData.emailVerification && userData.emailVerification === "sent" ?
                   <>
                     <div>
                       Email Not Verified 
