@@ -22,7 +22,7 @@ function Sidebar({ isSidebarOpen, toggleSidebar, isMobile }) {
         <FontAwesomeIcon icon="fa-solid fa-bars" size="2xl" />
       </button>
 
-      <div className={`sidebar ${isSidebarOpen ? "expanded" : "collapsed"} ${isMobile ? "isMobile" : "isNotMobile"}`}>
+      <div className={`sidebar sidebar-background ${isSidebarOpen ? "expanded" : "collapsed"} ${isMobile ? "isMobile" : "isNotMobile"}`}>
         <div className="sidebar-title">
           <div className="welcome-message">Hello</div>
           <div className="username">
