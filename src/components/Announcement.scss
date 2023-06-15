@@ -1,0 +1,12 @@
+// Description: Header styles
+
+@use "../styles/variables";
+@use "../styles/breakpoints";
+
+
+.announcement {
+
+  .icon-color {
+    color: variables.$bs-blue;
+  }
+}
