@@ -22,7 +22,7 @@ export default function Login() {
       setError('');
       setLoading(true);
       await login(emailRef.current.value, passwordRef.current.value);
-      navigate('/'); // navigate home after login
+      navigate('/'); // navigate home
     } catch (e) {
       if (e.code === 'auth/user-not-found') {
         setError('No account with that email');
@@ -78,7 +78,9 @@ export default function Login() {
                 <div className="text-center pt-2">
                   Need an account? <NavLink to="/signup">Sign Up</NavLink>
                 </div>
-                
+                <div className="text-center pt-2">
+                  <NavLink to="/admin-login">Admin Login</NavLink>
+                </div>
               </div>
             </Card>
           </Col>
