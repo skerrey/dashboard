@@ -179,7 +179,7 @@ function AccountProfileProgress() {
               </div>
               <div className="text-muted text-start ps-2">
               {
-                  userPhone != null ?
+                  userData && userPhone != null ?
                   <>
                     <div>Phone Added</div>
                     <div>recently</div>
