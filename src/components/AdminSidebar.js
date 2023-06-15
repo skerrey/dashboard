@@ -1,4 +1,4 @@
-// Description: Sidebar component
+// Description: Admin Sidebar component
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
