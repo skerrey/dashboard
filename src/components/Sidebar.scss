@@ -22,11 +22,24 @@ $sidebar-background-hover-active: rgba(255, 255, 255, 0.8);
   }
 }
 
+.sidebar-background { // Background image from Firebase
+  background-attachment: fixed;
+  background-color: #051e34;
+  background-image: url(//www.gstatic.com/mobilesdk/190424_mobilesdk/nav_nachos@2x.png);
+  background-position: left 0 bottom 0;
+  background-repeat: no-repeat;
+  background-size: 256px 556px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 256px;
+}
+
 .sidebar {
   font-size: variables.$font-size-sm;
   height: 100%;
   width: variables.$sidebar-width;
-  background-color: variables.$sidebar-background;
   display: inline-block;
   position: fixed;
   z-index: 10;
