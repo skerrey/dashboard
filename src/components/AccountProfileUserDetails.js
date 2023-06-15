@@ -19,6 +19,8 @@ function AccountProfileUserDetails() {
     updateInfo, 
     verifyEmail,
     verifyPassword,
+    reloadUserEmail,
+    reloadUserDisplayName
   } = useAuth();
   const { getUserPhone } = useFirestore(); 
 
@@ -72,6 +74,8 @@ function AccountProfileUserDetails() {
       await updateUserEmail(emailRef.current.value);
 
       setVerifyPasswordIfInactive(false);
+      await reloadUserEmail();
+      await reloadUserDisplayName();
       setSuccess('Account successfully updated');
       setTimeout(() => { 
         setSuccess('');
