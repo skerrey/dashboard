@@ -6,6 +6,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import PublicRoutes from "./routes/PublicRoutes";
+import AdminRoutes from "./routes/AdminRoutes";
 
 // Contexts
 import AuthProvider from './contexts/AuthContext';
@@ -19,6 +20,7 @@ import Maintenance from './pages/Maintenance';
 import ContactUs from './pages/ContactUs';
 import AccountProfile from "./pages/AccountProfile";
 import Settings from './pages/Settings';
+import AdminHome from './pages/AdminHome';
 
 // Components
 import Login from "./components/Login";
@@ -28,6 +30,7 @@ import ForgotPassword from "./components/ForgotPassword";
 // Layouts
 import PrivateLayout from "./layouts/PrivateLayout";
 import GuestLayout from "./layouts/GuestLayout";
+import AdminLayout from "./layouts/AdminLayout";
 
 // Styling
 import './App.scss';
@@ -58,6 +61,11 @@ function App() {
               <Route path="/contact-us"       element={<PrivateRoutes><ContactUs /></PrivateRoutes>} />
               <Route path="/account-profile"  element={<PrivateRoutes><AccountProfile /></PrivateRoutes>} />
               <Route path="/settings"         element={<PrivateRoutes><Settings /></PrivateRoutes>} />
+            </Route>
+
+            {/* Routes for admin */}
+            <Route element={<AdminLayout />}>
+              <Route path="/admin"            element={<AdminRoutes><AdminHome /></AdminRoutes>} />
             </Route>
             
           </Routes>
