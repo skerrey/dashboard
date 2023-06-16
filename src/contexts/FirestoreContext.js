@@ -23,6 +23,7 @@ export function useFirestore() {
 export default function FirestoreProvider({ children }) {
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState();
+  const [loading, setLoading] = useState(true);
   const { formattedDateDay, formattedDateHour } = FormattedDate();
 
   // Add Maintenance request to db
@@ -164,7 +165,6 @@ export default function FirestoreProvider({ children }) {
     }
   };
   
-
   // Set up Firestore snapshot listener
   useEffect(() => {
     if (currentUser) {
@@ -173,10 +173,13 @@ export default function FirestoreProvider({ children }) {
         if (doc.exists()) {
           setUserData(doc.data());
         }
+        setLoading(false);
       });
 
       // Clean up subscription on unmount
       return () => unsubscribe();
+    } else {
+      setLoading(false);
     }
   }, [currentUser]);
 
@@ -196,7 +199,7 @@ export default function FirestoreProvider({ children }) {
 
   return (
     <FirestoreContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </FirestoreContext.Provider>
   );
 }
