@@ -3,7 +3,7 @@
 import React from 'react';
 
 // Routes
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import PublicRoutes from "./routes/PublicRoutes";
 import AdminRoutes from "./routes/AdminRoutes";
@@ -51,6 +51,7 @@ function App() {
               <Route path="/login"            element={<PublicRoutes><Login /></PublicRoutes>} />
               <Route path="/signup"           element={<PublicRoutes><Signup /></PublicRoutes>} />
               <Route path="/forgot-password"  element={<PublicRoutes><ForgotPassword /></PublicRoutes>} />
+              <Route path="*"                 element={<PublicRoutes><Navigate to="/login" replace /></PublicRoutes>} />
             </Route>
 
             {/* Routes for authenticated users */}
@@ -61,11 +62,13 @@ function App() {
               <Route path="/contact-us"       element={<PrivateRoutes><ContactUs /></PrivateRoutes>} />
               <Route path="/account-profile"  element={<PrivateRoutes><AccountProfile /></PrivateRoutes>} />
               <Route path="/settings"         element={<PrivateRoutes><Settings /></PrivateRoutes>} />
+              <Route path="*"                 element={<PrivateRoutes><Navigate to="/" replace /></PrivateRoutes>} /> 
             </Route>
 
             {/* Routes for admin */}
             <Route element={<AdminLayout />}>
               <Route path="/admin"            element={<AdminRoutes><AdminHome /></AdminRoutes>} />
+              {/* <Route path="*"                 element={<AdminRoutes><Navigate to="/admin" replace /></AdminRoutes>} /> */}
             </Route>
             
           </Routes>
