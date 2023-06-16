@@ -78,7 +78,7 @@ export default function AuthProvider({ children }) {
   
   // Login
   function login(email, password) { 
-    return signInWithEmailAndPassword(auth, email, password); // Change this function to log into server (firebase alternative)
+    return signInWithEmailAndPassword(auth, email, password); 
   };
 
   // Logout
