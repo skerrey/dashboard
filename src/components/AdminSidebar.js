@@ -7,7 +7,7 @@ import { useFirestore } from '../contexts/FirestoreContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Sidebar.scss';
 
-function Sidebar({ isSidebarOpen, toggleSidebar, isMobile }) {
+function AdminSidebar({ isSidebarOpen, toggleSidebar, isMobile }) {
   const { currentUser } = useAuth();
   const { userData } = useFirestore();
 
@@ -49,75 +49,10 @@ function Sidebar({ isSidebarOpen, toggleSidebar, isMobile }) {
         >
           Home
         </NavLink>
-
-        <NavLink
-          to="/payments"
-          className={({ isActive }) =>
-            isActive ? 'active link' : 'none link'
-          }
-          style={(isActive) => ({
-            borderLeftColor: isActive ? '#20c997' : 'transparent',
-          })}
-          onClick={handleClose}
-        >
-          Payments
-        </NavLink>
-
-        <NavLink
-          to="/maintenance"
-          className={({ isActive }) =>
-            isActive ? 'active link' : 'none link'
-          }
-          style={(isActive) => ({
-            borderLeftColor: isActive ? '#fd7e14' : 'transparent',
-          })}
-          onClick={handleClose}
-        >
-          Maintenance
-        </NavLink>
-
-        <NavLink
-          to="/contact-us"
-          className={({ isActive }) =>
-            isActive ? 'active link' : 'none link'
-          }
-          style={(isActive) => ({
-            borderLeftColor: isActive ? '#0dcaf0' : 'transparent',
-          })}
-          onClick={handleClose}
-        >
-          Contact Us
-        </NavLink>
-
-        <NavLink
-          to="/account-profile"
-          className={({ isActive }) =>
-            isActive ? 'active link' : 'none link'
-          }
-          style={(isActive) => ({
-            borderLeftColor: isActive ? '#0d6efd' : 'transparent',
-          })}
-          onClick={handleClose}
-        >
-          Account Profile
-        </NavLink>
-
-        <NavLink
-          to="/settings"
-          className={({ isActive }) =>
-            isActive ? 'active link' : 'none link'
-          }
-          style={(isActive) => ({
-            borderLeftColor: isActive ? '#6f42c1' : 'transparent',
-          })}
-          onClick={handleClose}
-        >
-          Settings
-        </NavLink>
         
       </div>
     </>
   );
 }
 
-export default Sidebar;
+export default AdminSidebar;
