@@ -1,6 +1,6 @@
 // Description: Layout for private routes when user is logged in
 
-import AdminSidebar from '../components/Sidebar';
+import AdminSidebar from '../components/AdminSidebar';
 import Header from '../components/Header';
 import { Outlet } from 'react-router-dom';
 import { useSidebar } from '../utils/Responsive';
@@ -37,7 +37,7 @@ function AdminLayout() {
       <TransparentBackground />
 
       <AdminSidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} isMobile={isMobile} />
-      <Header />
+      <Header  isAdmin={true} />
       <div className="private-layout">
         <Container fluid>
           <Outlet />
