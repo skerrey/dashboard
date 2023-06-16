@@ -3,6 +3,7 @@
 import React, { useRef, useState } from 'react';
 import { Form, Button, Card, Alert, Container, Row, Col } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
+import { useFirestore } from '../contexts/FirestoreContext';
 import { NavLink, useNavigate } from 'react-router-dom';
 import logo from '../images/logo.svg';
 import Announcement from './Announcement';
@@ -11,6 +12,7 @@ export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const { login } = useAuth();
+  const { userData } = useFirestore();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -22,7 +24,11 @@ export default function Login() {
       setError('');
       setLoading(true);
       await login(emailRef.current.value, passwordRef.current.value);
-      navigate('/'); // navigate home
+      if (userData && userData.isAdmin) {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (e) {
       if (e.code === 'auth/user-not-found') {
         setError('No account with that email');
@@ -77,9 +83,6 @@ export default function Login() {
                 </Form>
                 <div className="text-center pt-2">
                   Need an account? <NavLink to="/signup">Sign Up</NavLink>
-                </div>
-                <div className="text-center pt-2">
-                  <NavLink to="/admin-login">Admin Login</NavLink>
                 </div>
               </div>
             </Card>
