@@ -38,7 +38,7 @@ function AdminSidebar({ isSidebarOpen, toggleSidebar, isMobile }) {
         </div>
 
         <NavLink
-          to="/"
+          to="/admin"
           className={({ isActive }) =>
             isActive ? 'active link' : 'none link'
           }
@@ -48,6 +48,32 @@ function AdminSidebar({ isSidebarOpen, toggleSidebar, isMobile }) {
           onClick={handleClose}
         >
           Home
+        </NavLink>
+
+        <NavLink
+          to="/admin/payments"
+          className={({ isActive }) =>
+            isActive ? 'active link' : 'none link'
+          }
+          style={(isActive) => ({
+            borderLeftColor: isActive ? '#0d6efd' : 'transparent',
+          })}
+          onClick={handleClose}
+        >
+          Payments
+        </NavLink>
+
+        <NavLink
+          to="/admin/users"
+          className={({ isActive }) =>
+            isActive ? 'active link' : 'none link'
+          }
+          style={(isActive) => ({
+            borderLeftColor: isActive ? '#0d6efd' : 'transparent',
+          })}
+          onClick={handleClose}
+        >
+          Users
         </NavLink>
         
       </div>
