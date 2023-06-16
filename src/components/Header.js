@@ -9,7 +9,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useFirestore } from '../contexts/FirestoreContext';
 
-function Header() {
+function Header({ isAdmin }) {
   const [error, setError] = useState('');
   const [address, setAddress] = useState(''); 
   const { logout, userId } = useAuth();
@@ -38,6 +38,22 @@ function Header() {
         console.log("Error getting user address:", error);
       });
   }, [getAddress, userId]);
+
+  if (isAdmin) {
+    return (
+      <div className="header">
+
+          <NavLink to="/" className="nav-link">
+            <img src={logo} alt="logo" className="logo" />
+          </NavLink>
+          <h3 className="ps-2">Admin</h3>
+          <button className="btn btn-logout" onClick={handleLogout}>
+            <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" size="sm" /> Log Out
+          </button>
+
+      </div>
+    )
+  }
 
   return (
     <div className="header">
