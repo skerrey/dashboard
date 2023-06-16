@@ -20,7 +20,11 @@ import Maintenance from './pages/Maintenance';
 import ContactUs from './pages/ContactUs';
 import AccountProfile from "./pages/AccountProfile";
 import Settings from './pages/Settings';
-import AdminHome from './pages/AdminHome';
+
+// Admin Pages
+import AdminHome from './admin-pages/AdminHome';
+import AdminPayments from './admin-pages/AdminPayments';
+import AdminUsers from './admin-pages/AdminUsers';
 
 // Components
 import Login from "./components/Login";
@@ -68,7 +72,10 @@ function App() {
             {/* Routes for admin */}
             <Route element={<AdminLayout />}>
               <Route path="/admin"            element={<AdminRoutes><AdminHome /></AdminRoutes>} />
-              {/* <Route path="*"                 element={<AdminRoutes><Navigate to="/admin" replace /></AdminRoutes>} /> */}
+              <Route path="/admin/payments"   element={<AdminRoutes><AdminPayments /></AdminRoutes>} />
+              <Route path="/admin/users"      element={<AdminRoutes><AdminUsers /></AdminRoutes>} />
+
+              <Route path="*"                 element={<AdminRoutes><Navigate to="/admin" replace /></AdminRoutes>} />
             </Route>
             
           </Routes>
