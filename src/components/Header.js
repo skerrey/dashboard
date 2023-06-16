@@ -46,7 +46,7 @@ function Header({ isAdmin }) {
           <NavLink to="/" className="nav-link">
             <img src={logo} alt="logo" className="logo" />
           </NavLink>
-          <h3 className="ps-2">Admin</h3>
+          <div className="ps-2 h3">Admin Control Panel</div>
           <button className="btn btn-logout" onClick={handleLogout}>
             <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" size="sm" /> Log Out
           </button>
