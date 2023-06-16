@@ -38,7 +38,7 @@ function AdminSidebar({ isSidebarOpen, toggleSidebar, isMobile }) {
         </div>
 
         <NavLink
-          to="/admin"
+          to="/admin/"
           className={({ isActive }) =>
             isActive ? 'active link' : 'none link'
           }
