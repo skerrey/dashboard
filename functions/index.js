@@ -46,6 +46,96 @@ exports.getUsers = functions.https.onRequest((req, res) => {
 });
 
 /**
+ * Get all users
+ */
+exports.getAllUsers = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    // List batch of users, 1000 at a time.
+    const listUsers = async (nextPageToken) => {
+      try {
+        const listUsersResult = await admin.auth().listUsers(1000, nextPageToken);
+        const users = listUsersResult.users.map((user) => user.toJSON());
+
+        // Initialize Firestore database
+        const db = admin.firestore();
+
+        // Use Promise.all to fetch all Firestore documents in parallel
+        const firestoreDataPromises = users.map((user) =>
+          db.collection("users").doc(user.uid).get(),
+        );
+
+        // Get Firestore documents
+        const firestoreDocs = await Promise.all(firestoreDataPromises);
+
+        // Merge auth and Firestore data
+        const mergedData = users.map((user, index) => {
+          // Get Firestore data for this user
+          const firestoreData = firestoreDocs[index].data();
+
+          // Merge data
+          return {...user, ...firestoreData};
+        });
+
+        if (listUsersResult.pageToken) {
+          // List next batch of users.
+          listUsers(listUsersResult.pageToken);
+        } else {
+          res.setHeader("Content-Type", "application/json");
+          res.send({
+            "status": "success",
+            "message": "Users fetched successfully",
+            "data": mergedData,
+          });
+        }
+      } catch (error) {
+        console.log("Error fetching users: ", error);
+        res.status(500).send("Error fetching users");
+      }
+    };
+    listUsers();
+  });
+});
+
+/**
+ * Delete all users
+ */
+exports.deleteAllUsers = functions.https.onRequest((req, res) => {
+  cors(req, res, () => {
+    const deleteUsersRecursively = (nextPageToken) => {
+      admin.auth().listUsers(1000, nextPageToken)
+        .then((listUsersResult) => {
+          listUsersResult.users.forEach((userRecord) => {
+            admin.auth().deleteUser(userRecord.uid)
+              .then(() => {
+                console.log("Successfully deleted user", userRecord.uid);
+              })
+              .catch((error) => {
+                console.error("Error deleting user", userRecord.uid, error);
+              });
+          });
+
+          if (listUsersResult.pageToken) {
+            deleteUsersRecursively(listUsersResult.pageToken);
+          } else {
+            res.setHeader("Content-Type", "application/json");
+            res.send({
+              "status": "success",
+              "message": "All users deleted successfully",
+              "data": null,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log("Error fetching user data:", error);
+          res.status(500).send("Error deleting users");
+        });
+    };
+
+    deleteUsersRecursively();
+  });
+});
+
+/**
  * Payment Intent WITH ID for creating a payment using Stripe
  */
 exports.createPaymentIntent = functions.https.onRequest(async (req, res) => {
