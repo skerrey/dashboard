@@ -4,6 +4,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { db } from '../firebase.config';
 import FormattedDate from '../utils/FormattedDate';
 import { useAuth } from '../contexts/AuthContext';
+import { Stripe } from 'stripe';
 import { 
   doc, 
   updateDoc, 
@@ -13,6 +14,8 @@ import {
   setDoc, 
   arrayRemove,
 } from 'firebase/firestore';
+
+const stripe = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY);
 
 const FirestoreContext = React.createContext();
 
@@ -126,6 +129,8 @@ export default function FirestoreProvider({ children }) {
   // Save transaction to the db
   const saveTransaction = async (userId, paymentIntentId, amount, paymentStatus, paymentMethodId) => {
     const userRef = doc(db, "users", userId);
+    const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
+    const lastFourDigits = paymentMethod.card.last4;
 
     await setDoc(userRef, {
       payments: {
@@ -135,6 +140,7 @@ export default function FirestoreProvider({ children }) {
           amount: amount / 100,
           status: paymentStatus,
           paymentMethodId: paymentMethodId,
+          last4: lastFourDigits
         })
       }
     }, { merge: true });
