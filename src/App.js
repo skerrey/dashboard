@@ -75,7 +75,7 @@ function App() {
               <Route path="/admin"            element={<AdminRoutes><AdminHome /></AdminRoutes>} />
               <Route path="/admin/payments"   element={<AdminRoutes><AdminPayments /></AdminRoutes>} />
               <Route path="/admin/users"      element={<AdminRoutes><AdminUsers /></AdminRoutes>} />
-              <Route path="/admin/users/user/:id"         element={<AdminRoutes><AdminUserDetails /></AdminRoutes>} />
+              <Route path="/admin/users/user/:userId"         element={<AdminRoutes><AdminUserDetails /></AdminRoutes>} />
               <Route path="*"                 element={<AdminRoutes><Navigate to="/admin" replace /></AdminRoutes>} />
             </Route>
             
