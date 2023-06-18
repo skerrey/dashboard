@@ -10,8 +10,8 @@ function AdminUsers() {
   const [filteredUsers, setFilteredUsers] = useState([]);
 
   const fetchUsers = () => {
-    const getAllUsers = httpsCallable(functions, 'getAllUsers');
-    getAllUsers()
+    const getUsers = httpsCallable(functions, 'getUsers');
+    getUsers()
       .then((result) => {
         console.log(result.data);
         setUsers(result.data);
@@ -37,7 +37,7 @@ function AdminUsers() {
       )
     );
   }, [searchQuery, users]);
-  
+
 
   return (
     <div>
