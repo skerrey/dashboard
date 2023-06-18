@@ -25,6 +25,7 @@ import Settings from './pages/Settings';
 import AdminHome from './admin-pages/AdminHome';
 import AdminPayments from './admin-pages/AdminPayments';
 import AdminUsers from './admin-pages/AdminUsers';
+import AdminUserDetails from './admin-pages/AdminUserDetails';
 
 // Components
 import Login from "./components/Login";
@@ -74,7 +75,7 @@ function App() {
               <Route path="/admin"            element={<AdminRoutes><AdminHome /></AdminRoutes>} />
               <Route path="/admin/payments"   element={<AdminRoutes><AdminPayments /></AdminRoutes>} />
               <Route path="/admin/users"      element={<AdminRoutes><AdminUsers /></AdminRoutes>} />
-
+              <Route path="/admin/users/user/:id"         element={<AdminRoutes><AdminUserDetails /></AdminRoutes>} />
               <Route path="*"                 element={<AdminRoutes><Navigate to="/admin" replace /></AdminRoutes>} />
             </Route>
             
