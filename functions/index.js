@@ -97,41 +97,26 @@ exports.getAllUsers = functions.https.onRequest((req, res) => {
 });
 
 /**
- * Delete all users
+ * Delete user by ID
  */
-exports.deleteAllUsers = functions.https.onRequest((req, res) => {
+exports.deleteUser = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
-    const deleteUsersRecursively = (nextPageToken) => {
-      admin.auth().listUsers(1000, nextPageToken)
-        .then((listUsersResult) => {
-          listUsersResult.users.forEach((userRecord) => {
-            admin.auth().deleteUser(userRecord.uid)
-              .then(() => {
-                console.log("Successfully deleted user", userRecord.uid);
-              })
-              .catch((error) => {
-                console.error("Error deleting user", userRecord.uid, error);
-              });
-          });
+    // Get the user ID from the request body
+    const userId = req.body.userId;
 
-          if (listUsersResult.pageToken) {
-            deleteUsersRecursively(listUsersResult.pageToken);
-          } else {
-            res.setHeader("Content-Type", "application/json");
-            res.send({
-              "status": "success",
-              "message": "All users deleted successfully",
-              "data": null,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log("Error fetching user data:", error);
-          res.status(500).send("Error deleting users");
+    admin.auth().deleteUser(userId)
+      .then(() => {
+        res.setHeader("Content-Type", "application/json");
+        res.send({
+          "status": "success",
+          "message": "User deleted successfully",
+          "data": null,
         });
-    };
-
-    deleteUsersRecursively();
+      })
+      .catch((error) => {
+        console.error("Error deleting user", userId, error);
+        res.status(500).send("Error deleting user");
+      });
   });
 });
 
