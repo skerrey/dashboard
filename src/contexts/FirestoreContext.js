@@ -164,6 +164,16 @@ export default function FirestoreProvider({ children }) {
       }, { merge: true });
     }
   };
+
+  // Get user data from db
+  const getUser = async (userId) => {
+    const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+    if (userDoc.exists()) {
+      return userDoc.data();
+    }
+    return null;
+  };
   
   // Set up Firestore snapshot listener
   useEffect(() => {
@@ -194,7 +204,8 @@ export default function FirestoreProvider({ children }) {
     updateEmailVerificationStatus,
     saveTransaction,
     updateBalance,
-    deleteCard
+    deleteCard,
+    getUser,
   };
 
   return (
