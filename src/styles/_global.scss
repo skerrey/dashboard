@@ -21,23 +21,23 @@
 
 // Card styles
 .card {
-  &.card-payments {
+  &.card-payments, &.card-admin-payments {
     border-top: 7px solid variables.$bs-teal;
   }
 
-  &.card-maintenance {
+  &.card-maintenance, &.card-admin-maintenance {
     border-top: 7px solid variables.$bs-orange;
   }
 
-  &.card-contact {
+  &.card-contact, &.card-admin-contact {
     border-top: 7px solid variables.$bs-cyan;
   }
 
-  &.card-account {
+  &.card-account, &.card-admin-users {
     border-top: 7px solid variables.$bs-blue;
   }
 
-  &.card-settings {
+  &.card-settings, &.card-admin-settings {
     border-top: 7px solid variables.$bs-purple;
   }
 
