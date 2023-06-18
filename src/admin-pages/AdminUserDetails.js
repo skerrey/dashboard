@@ -77,11 +77,28 @@ function AdminUserDetails() {
                 </table>
               </Tab>
               <Tab eventKey="payments" title="Payments">
-                <table>
+                <table className="table">
                   <tbody>
                     <tr>
-                      <td></td>
+                      <th>Paid On</th>
+                      <th>Card</th>
+                      <th>Amount</th>
+                      <th>Status</th>
                     </tr>
+                    {user.payments.transactions.map((transaction, index) => (
+                      <tr key={index}>
+                        <td>{transaction.paidOn}</td>
+                        <td>
+                          {transaction.paymentMethodId ? (
+                            <span className="text-success">**** **** **** {transaction.last4}</span>
+                          ) : (
+                            <span className="text-danger">N/A</span>
+                          )}
+                        </td>
+                        <td>${transaction.amount}</td>
+                        <td>{transaction.status}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </Tab>
