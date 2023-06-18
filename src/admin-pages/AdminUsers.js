@@ -3,11 +3,14 @@ import { Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { httpsCallable } from "firebase/functions";
 import { functions } from '../firebase.config';
+import { useNavigate } from 'react-router-dom';
+import './Admin.scss';
 
 function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const navigate = useNavigate();
 
   const fetchUsers = () => {
     const getUsers = httpsCallable(functions, 'getUsers');
@@ -38,7 +41,6 @@ function AdminUsers() {
     );
   }, [searchQuery, users]);
 
-
   return (
     <div>
       <div className="page-title">
@@ -46,10 +48,10 @@ function AdminUsers() {
       </div>
       <Row>
         <Col>
-        <Card className="card-account">
+        <Card className="card-admin-users">
           <Card.Body>
             <Card.Title>List of Users</Card.Title>
-            <Form className="d-flex">
+            <Form className="d-flex mb-2">
               <Form.Control
                 type="search"
                 placeholder="Search"
@@ -58,13 +60,10 @@ function AdminUsers() {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
-              <Button>
-                Search
-              </Button>
             </Form>
             <div>
             {filteredUsers.length > 0 ? (
-              <table className="table table-striped">
+              <table className="table table-hover">
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -75,7 +74,7 @@ function AdminUsers() {
                   </thead>
                   <tbody>
                     {filteredUsers.map((user) => (
-                      <tr key={user.uid}>
+                      <tr key={user.uid} onClick={() => navigate(`/admin/users/user/${user.uid}`)} className='pointer'>
                         <td>{user.displayName}</td>                        
                         <td>{user.email}</td>
                         <td>{user.emailVerified.toString()}</td>
