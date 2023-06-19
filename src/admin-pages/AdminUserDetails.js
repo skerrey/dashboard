@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useFirestore } from '../contexts/FirestoreContext';
-import { Row, Col, Card, Tabs, Tab } from 'react-bootstrap';
+import { Row, Col, Card, Tabs, Tab, Form } from 'react-bootstrap';
 
 function AdminUserDetails() {
   const [user, setUser] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
   const { userId } = useParams(); // Extract user ID from the route parameters
   const { getUser } = useFirestore();
 
@@ -14,6 +16,7 @@ function AdminUserDetails() {
         const userData = await getUser(userId);
         if (userData) {
           setUser(userData);
+          setFilteredTransactions(userData.payments.transactions);
         } else {
           console.log(`No user data returned for user id: ${userId}`);
         }
@@ -24,6 +27,19 @@ function AdminUserDetails() {
 
     fetchUser();
   }, [userId, getUser]);
+
+  useEffect(() => {
+    if(user) {
+      setFilteredTransactions(
+        user.payments.transactions.filter(transaction =>
+          transaction.status.toLowerCase().includes(searchQuery.toLowerCase()) 
+          || transaction.paidOn.toLowerCase().includes(searchQuery.toLowerCase())
+          || transaction.amount.toString().includes(searchQuery.toLowerCase())
+          
+        )
+      );
+    }
+  }, [searchQuery, user]);
 
 
   if (!user) {
@@ -77,6 +93,15 @@ function AdminUserDetails() {
                 </table>
               </Tab>
               <Tab eventKey="payments" title="Payments">
+                <Form className="d-flex mb-2">
+                  <Form.Control
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                  />
+                </Form>
                 <table className="table">
                   <tbody>
                     <tr>
@@ -85,7 +110,7 @@ function AdminUserDetails() {
                       <th>Amount</th>
                       <th>Status</th>
                     </tr>
-                    {user.payments.transactions.map((transaction, index) => (
+                    {filteredTransactions.map((transaction, index) => (
                       <tr key={index}>
                         <td>{transaction.paidOn}</td>
                         <td>
