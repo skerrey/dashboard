@@ -55,7 +55,6 @@ function AdminUsers() {
               <Form.Control
                 type="search"
                 placeholder="Search"
-                className="me-2"
                 aria-label="Search"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
