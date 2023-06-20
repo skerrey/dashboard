@@ -129,14 +129,14 @@ function AdminUserDetails() {
               </Tab>
               <Tab eventKey="maintenance" title="Maintenance Requests">
                 <Form className="d-flex mb-2">
-                    <Form.Control
-                      type="search"
-                      placeholder="Search"
-                      aria-label="Search"
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                    />
-                  </Form>
+                  <Form.Control
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                  />
+                </Form>
                 <table className="table">
                   <tbody>
                     <tr>
