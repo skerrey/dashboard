@@ -5,8 +5,10 @@ import { Row, Col, Card, Tabs, Tab, Form } from 'react-bootstrap';
 
 function AdminUserDetails() {
   const [user, setUser] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQueryTransactions, setSearchQueryTransactions] = useState('');
+  const [searchQueryMaintenance, setSearchQueryMaintenance] = useState('');
   const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [filteredMaintenance, setFilteredMaintenance] = useState([]);
   const { userId } = useParams(); // Extract user ID from the route parameters
   const { getUser } = useFirestore();
 
@@ -32,14 +34,27 @@ function AdminUserDetails() {
     if(user) {
       setFilteredTransactions(
         user.payments.transactions.filter(transaction =>
-          transaction.status.toLowerCase().includes(searchQuery.toLowerCase()) 
-          || transaction.paidOn.toLowerCase().includes(searchQuery.toLowerCase())
-          || transaction.amount.toString().includes(searchQuery.toLowerCase())
+          transaction.status.toLowerCase().includes(searchQueryTransactions.toLowerCase()) 
+          || transaction.paidOn.toLowerCase().includes(searchQueryTransactions.toLowerCase())
+          || transaction.amount.toString().includes(searchQueryTransactions.toLowerCase())
 
         )
       );
     }
-  }, [searchQuery, user]);
+  }, [searchQueryTransactions, user]);
+
+  useEffect(() => {
+    if(user) {
+      setFilteredMaintenance(
+        user.maintenanceRequests.filter(request =>
+          request.date.day.toLowerCase().includes(searchQueryMaintenance.toLowerCase()) 
+          || request.issue.issue.toLowerCase().includes(searchQueryMaintenance.toLowerCase())
+          || request.message.toString().includes(searchQueryMaintenance.toLowerCase())
+
+        )
+      );
+    }
+  }, [searchQueryMaintenance, user]);
 
 
   if (!user) {
@@ -98,8 +113,8 @@ function AdminUserDetails() {
                     type="search"
                     placeholder="Search"
                     aria-label="Search"
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
+                    value={searchQueryTransactions}
+                    onChange={e => setSearchQueryTransactions(e.target.value)}
                   />
                 </Form>
                 <table className="table">
@@ -133,30 +148,24 @@ function AdminUserDetails() {
                     type="search"
                     placeholder="Search"
                     aria-label="Search"
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
+                    value={searchQueryMaintenance}
+                    onChange={e => setSearchQueryMaintenance(e.target.value)}
                   />
                 </Form>
                 <table className="table">
                   <tbody>
                     <tr>
-                      <th>Paid On</th>
-                      <th>Card</th>
-                      <th>Amount</th>
-                      <th>Status</th>
+                      <th>Maintenance Request ID</th>
+                      <th>Date</th>
+                      <th>Issue</th>
+                      <th>Message</th>
                     </tr>
-                    {filteredTransactions.map((transaction, index) => (
+                    {filteredMaintenance.map((request, index) => (
                       <tr key={index}>
-                        <td>{transaction.paidOn}</td>
-                        <td>
-                          {transaction.paymentMethodId ? (
-                            <span className="text-success">**** **** **** {transaction.last4}</span>
-                          ) : (
-                            <span className="text-danger">N/A</span>
-                          )}
-                        </td>
-                        <td>${transaction.amount}</td>
-                        <td>{transaction.status}</td>
+                        <td>{request._id}</td>
+                        <td>{request.date.day}</td>
+                        <td>{request.issue.issue}</td>
+                        <td>{request.message}</td>
                       </tr>
                     ))}
                   </tbody>
