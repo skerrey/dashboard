@@ -35,7 +35,7 @@ function AdminUserDetails() {
           transaction.status.toLowerCase().includes(searchQuery.toLowerCase()) 
           || transaction.paidOn.toLowerCase().includes(searchQuery.toLowerCase())
           || transaction.amount.toString().includes(searchQuery.toLowerCase())
-          
+
         )
       );
     }
@@ -128,7 +128,30 @@ function AdminUserDetails() {
                 </table>
               </Tab>
               <Tab eventKey="maintenance" title="Maintenance Requests">
-                Tab content for Contact
+                <table className="table">
+                  <tbody>
+                    <tr>
+                      <th>Paid On</th>
+                      <th>Card</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                    </tr>
+                    {filteredTransactions.map((transaction, index) => (
+                      <tr key={index}>
+                        <td>{transaction.paidOn}</td>
+                        <td>
+                          {transaction.paymentMethodId ? (
+                            <span className="text-success">**** **** **** {transaction.last4}</span>
+                          ) : (
+                            <span className="text-danger">N/A</span>
+                          )}
+                        </td>
+                        <td>${transaction.amount}</td>
+                        <td>{transaction.status}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </Tab>
             </Tabs>
           </Card.Body>
