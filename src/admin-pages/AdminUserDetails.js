@@ -175,7 +175,7 @@ function AdminUserDetails() {
                         </td>
                         <td>{request.message}</td>
                         <td>
-                          {request.status.completed.toString()}
+                          {request.status}
                         </td>
                       </tr>
                     ))}
