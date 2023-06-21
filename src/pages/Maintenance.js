@@ -185,7 +185,7 @@ function ContactUs() {
                         {data.issue.issue} Issue {data.issue.otherMessage && <>- {data.issue.otherMessage}</>}
                       </div>
                       <div>
-                        {data.status.open ? <Badge bg="danger">Open</Badge> : <Badge bg="success">Closed</Badge>}
+                        {data.status === "open" ? <Badge bg="danger">Open</Badge> : <Badge bg="success">Completed</Badge>}
                       </div>
                     </div>
                     <div className="text-muted me-2 mb-2">
