@@ -46,12 +46,7 @@ export default function FirestoreProvider({ children }) {
             otherMessage
           },
           message: message,
-          status: {
-            open: true,
-            received: false,
-            inProgress: false,
-            completed: false,
-          }
+          status: "open"
         }
       )
     }, { merge: true });
