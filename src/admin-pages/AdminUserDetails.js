@@ -163,12 +163,14 @@ function AdminUserDetails() {
                     {filteredMaintenance.map((request, index) => (
                       <tr key={index}>
                         <td>{request._id}</td>
-                        <td>{request.date.day}</td>
+                        <td>
+                          {request.date.day}
+                          <br />
+                          {request.date.time}
+                        </td>
                         <td>{request.issue.issue} 
-                          {request.issue.issue === "Other" ? 
-                            " - " + request.issue.other :
-                            null
-                          }
+                          <br />
+                          {request.issue.otherMessage}
                         </td>
                         <td>{request.message}</td>
                       </tr>
