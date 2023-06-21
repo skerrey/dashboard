@@ -159,6 +159,7 @@ function AdminUserDetails() {
                       <th>Date</th>
                       <th>Issue</th>
                       <th>Message</th>
+                      <th>Status</th>
                     </tr>
                     {filteredMaintenance.map((request, index) => (
                       <tr key={index}>
@@ -173,6 +174,9 @@ function AdminUserDetails() {
                           {request.issue.otherMessage}
                         </td>
                         <td>{request.message}</td>
+                        <td>
+                          {request.status.completed.toString()}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
