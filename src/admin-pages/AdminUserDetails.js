@@ -164,7 +164,12 @@ function AdminUserDetails() {
                       <tr key={index}>
                         <td>{request._id}</td>
                         <td>{request.date.day}</td>
-                        <td>{request.issue.issue}</td>
+                        <td>{request.issue.issue} 
+                          {request.issue.issue === "Other" ? 
+                            " - " + request.issue.other :
+                            null
+                          }
+                        </td>
                         <td>{request.message}</td>
                       </tr>
                     ))}
