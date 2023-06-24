@@ -182,6 +182,46 @@ function AdminUserDetails() {
                   </tbody>
                 </table>
               </Tab>
+              <Tab eventKey="contact" title="Contact Requests">
+                <Form className="d-flex mb-2">
+                  <Form.Control
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                    value={searchQueryMaintenance}
+                    onChange={e => setSearchQueryMaintenance(e.target.value)}
+                  />
+                </Form>
+                <table className="table">
+                  <tbody>
+                    <tr>
+                      <th>Maintenance Request ID</th>
+                      <th>Date</th>
+                      <th>Issue</th>
+                      <th>Message</th>
+                      <th>Status</th>
+                    </tr>
+                    {filteredMaintenance.map((request, index) => (
+                      <tr key={index}>
+                        <td>{request._id}</td>
+                        <td>
+                          {request.date.day}
+                          <br />
+                          {request.date.time}
+                        </td>
+                        <td>{request.issue.issue} 
+                          <br />
+                          {request.issue.otherMessage}
+                        </td>
+                        <td>{request.message}</td>
+                        <td>
+                          {request.status}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Tab>
             </Tabs>
           </Card.Body>
         </Card>
