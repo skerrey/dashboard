@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useFirestore } from '../contexts/FirestoreContext';
 import { NavLink, useNavigate } from 'react-router-dom';
 import logo from '../images/logo.svg';
-import Announcement from './Announcement';
+// import Announcement from './Announcement';
 
 export default function Login() {
   const emailRef = useRef();
@@ -44,7 +44,7 @@ export default function Login() {
 
   return (
     <>
-      <Announcement
+      {/* <Announcement
         header="Use the following credentials to login:"
         body={`
           <strong>Email:</strong> example@test.com
@@ -53,7 +53,7 @@ export default function Login() {
           <br />
           <i>Or Sign Up a new user</i>
         `}
-      />
+      /> */}
       <Container className="px-sm-0 px-md-1">
         <Row className="pt-sm-5 mb-0">
           <Col sm={9} md={7} lg={6} xl={5} className="px-0 mx-auto pt-sm-5">
@@ -70,11 +70,11 @@ export default function Login() {
                 <Form onSubmit={handleSubmit}>
                   <Form.Group id="email">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" autoComplete="email" ref={emailRef} required />
+                    <Form.Control type="email" autoComplete="email" ref={emailRef} defaultValue="example@test.com" required />
                   </Form.Group>
                   <Form.Group id="password" className="my-2">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" autoComplete="current-password" ref={passwordRef} required />
+                    <Form.Control type="password" autoComplete="current-password" ref={passwordRef} defaultValue="password123" required />
                   </Form.Group>
                   <div className="d-flex justify-content-between py-3">
                     <Button disabled={loading} type="submit">Log In</Button>
